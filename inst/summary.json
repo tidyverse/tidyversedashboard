@@ -1,0 +1,33 @@
+query repoSummary($org:String!) {
+  organization(login: $org) {
+    repositories(first:100) {
+      nodes {
+        owner {login},
+        repo:name,
+        open_issues : issues(first:100, states:OPEN) {
+          totalCount
+          nodes {
+            p1 : reactions(content:THUMBS_UP) {
+              totalCount
+            }
+            labels(first:10) {
+              nodes {
+                name
+              }
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+        }
+        prs : pullRequests(states:OPEN) {
+          totalCount
+        }
+        watchers : stargazers() {
+          totalCount
+        }
+      }
+    }
+  }
+}

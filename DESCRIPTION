@@ -1,0 +1,9 @@
+Package: tidyversedashboard
+Title: Tidyverse activity dashboard
+Version: 0.0.0.9000
+Authors@R: person("Jim", "Hester", email = "james.f.hester@gmail.com", role = c("aut", "cre"))
+Description: A dashboard to show repository activity in tidyverse organisations.
+Depends: R (>= 3.4.3)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true

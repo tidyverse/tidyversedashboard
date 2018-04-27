@@ -1,0 +1,66 @@
+---
+title: " Repository Dashboard"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include = FALSE}
+library(flexdashboard)
+library(gh)
+library(jsonlite)
+library(lubridate)
+library(dplyr)
+library(purrr)
+library(tibble)
+library(codetools) # there was a weird error on connect that needed this
+library(DT)
+```
+
+```{r pr_stats, include=FALSE, cache = TRUE}
+pr_data <- bind_rows(
+  org_pr("r-lib"),
+  org_pr("tidyverse"),
+  org_pr("r-dbi"))
+
+prs <- d %>%
+  mutate(createdAt = as_datetime(d$createdAt)) %>%
+  filter(createdAt > today() - ddays(30)) %>%
+  select(repo, number, author, reviewer) %>%
+  filter(author != reviewer) %>%
+  unique()
+
+pr_authors <- prs %>% select(-reviewer) %>% unique() %>% group_by(author)
+pr_reviewers <- prs %>% select(-author) %>% unique() %>% group_by(reviewer)
+```
+
+```{r repo_stats, include = FALSE, cache = TRUE}
+summary_data <- bind_rows(
+  org_summary("tidyverse"),
+  org_summary("r-lib"),
+  org_summary("r-dbi"))
+```
+
+Repository Statistics
+=====================================
+```{r}
+datatable(summary_data)
+```
+
+Pull Request Review counts
+=====================================
+
+Column
+-------------------------------------
+### PR authors
+```{r}
+datatable(tally(pr_authors, sort = TRUE))
+```
+
+Column
+-------------------------------------
+### PR Reviewers
+```{r}
+datatable(tally(pr_reviewers, sort = TRUE))
+```

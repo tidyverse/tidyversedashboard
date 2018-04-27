@@ -1,0 +1,26 @@
+query pullRequest($org:String!) {
+  organization(login: $org) {
+    repositories(first: 100, orderBy: {field: PUSHED_AT, direction: DESC}) {
+      nodes {
+        name
+        pullRequests(first: 50, orderBy: {field: UPDATED_AT, direction: DESC}) {
+          nodes {
+            number
+            author {
+              login
+            }
+            createdAt
+            reviews(first: 10) {
+              nodes {
+                author {
+                  login
+                }
+                submittedAt
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
