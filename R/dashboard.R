@@ -1,3 +1,4 @@
+#' @importFrom purrr map_chr
 parse_issue <- function(x) {
   labels <- map_chr(x$labels$nodes, "name")
 
@@ -26,6 +27,9 @@ parse_repository <- function(x) {
     unlabeled = sum(issues$unlabeled))
 }
 
+#' Compute an organization summary
+#' @param org A GitHub organization name
+#' @export
 org_summary <- function(org) {
   res <- graphql_query("summary.json", org = org)
   map_dfr(res$data$organization$repositories$nodes, parse_repository)

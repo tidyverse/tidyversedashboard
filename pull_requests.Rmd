@@ -16,6 +16,8 @@ library(purrr)
 library(tibble)
 library(codetools) # there was a weird error on connect that needed this
 library(DT)
+library(tidyversedashboard)
+library(tidyr)
 ```
 
 ```{r pr_stats, include=FALSE, cache = TRUE}
@@ -24,11 +26,10 @@ pr_data <- bind_rows(
   org_pr("tidyverse"),
   org_pr("r-dbi"))
 
-prs <- d %>%
-  mutate(createdAt = as_datetime(d$createdAt)) %>%
-  filter(createdAt > today() - ddays(30)) %>%
+prs <- pr_data %>%
+  filter(created > today() - ddays(30)) %>%
   select(repo, number, author, reviewer) %>%
-  filter(author != reviewer) %>%
+  filter(is.na(reviewer) | author != reviewer) %>%
   unique()
 
 pr_authors <- prs %>% select(-reviewer) %>% unique() %>% group_by(author)

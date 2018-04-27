@@ -9,3 +9,11 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jimhester/tidyversedashboard
 BugReports: https://github.com/jimhester/tidyversedashboard/issues
+RoxygenNote: 6.0.1.9000
+Imports: 
+    dplyr,
+    lubridate,
+    purrr,
+    tibble,
+    tidyr,
+    gh
