@@ -51,7 +51,7 @@ parse_issues_issue <- function(x) {
 #' @importFrom dplyr %>%
 parse_issues_repository <- function(x) {
   if (x$open_issues$totalCount == 0) {
-    return(list(issue = numeric(), title = character(), updated = as_datetime(list()), p1 = integer(), labels = list()))
+    return(list(issue = numeric(), title = character(), updated = as_datetime(character()), p1 = integer(), labels = list()))
   } else {
     issues <- map_dfr(x$open_issues$nodes, parse_issues_issue)
   }
