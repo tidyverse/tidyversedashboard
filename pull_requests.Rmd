@@ -34,6 +34,7 @@ prs <- pr_data %>%
 
 pr_authors <- prs %>% select(-reviewer) %>% unique() %>% group_by(author)
 pr_reviewers <- prs %>% select(-author) %>% unique() %>% group_by(reviewer)
+pr_pairs <- prs %>% na.omit() %>% group_by(author, reviewer) %>% tally(sort = TRUE)
 ```
 
 ```{r repo_stats, include = FALSE, cache = TRUE}
@@ -85,7 +86,14 @@ datatable(tally(pr_authors, sort = TRUE))
 
 Column
 -------------------------------------
-### PR Reviewers
+### PR reviewers
 ```{r}
 datatable(tally(pr_reviewers, sort = TRUE))
+```
+
+Column
+-------------------------------------
+### PR pairs
+```{r}
+datatable(tally(pr_pairs, sort = TRUE))
 ```
