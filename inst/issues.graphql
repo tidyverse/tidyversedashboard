@@ -1,0 +1,23 @@
+query issueList($owner: String!, $repo: String!, $cursor: String) {
+  repository(owner: $owner, name: $repo) {
+    open_issues: issues(first: 100, states: OPEN, after: $cursor) {
+      nodes {
+        number
+        title
+        updatedAt
+        p1: reactions(content: THUMBS_UP) {
+          totalCount
+        }
+        labels(first: 10) {
+          nodes {
+            name
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}

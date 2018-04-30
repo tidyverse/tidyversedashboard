@@ -2,7 +2,9 @@
 
 export(org_pr)
 export(org_summary)
+importFrom(dplyr,bind_rows)
 importFrom(dplyr,everything)
+importFrom(dplyr,mutate)
 importFrom(dplyr,select)
 importFrom(lubridate,as_datetime)
 importFrom(purrr,"%||%")

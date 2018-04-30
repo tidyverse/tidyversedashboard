@@ -38,7 +38,7 @@ utils::globalVariables("repo")
 #' @export
 org_pr <- function(org) {
   # TODO: paginate repos and maybe pullRequests?
-  res <- graphql_query("pullrequests.json", org = org)
+  res <- graphql_query("pullrequests.graphql", org = org)
 
   d <- map_dfr(res$data$organization$repositories$nodes, parse_pr_repository)
   d$org <- org

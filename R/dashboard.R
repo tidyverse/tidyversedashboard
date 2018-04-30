@@ -1,10 +1,10 @@
 #' @importFrom purrr map_chr
-parse_issue <- function(x) {
+parse_summary_issue <- function(x) {
   labels <- map_chr(x$labels$nodes, "name")
 
   list(p1 = x$p1$totalCount %||% 0, bugs = "bug" %in% labels, features = "feature" %in% labels, unlabeled = !length(labels))
 }
-parse_repository <- function(x) {
+parse_summary_repository <- function(x) {
   if (x$open_issues$totalCount == 0) {
     issues <- list(p1 = 0, bugs = FALSE, features = FALSE, unlabeled = FALSE)
   } else {
@@ -27,10 +27,42 @@ parse_repository <- function(x) {
     unlabeled = sum(issues$unlabeled))
 }
 
+
+parse_issues_issue <- function(x) {
+  labels <- map_chr(x$labels$nodes, "name")
+
+  list(issue = x$number, title = x$title, updated = as_datetime(x$updatedAt), p1 = x$p1$totalCount %||% 0, labels = list(labels))
+}
+
+#' @importFrom dplyr mutate
+#' @importFrom dplyr bind_rows
+parse_issues_repository <- function(x) {
+  if (x$open_issues$totalCount == 0) {
+    return(list(org = character(), repo = character(), issue = numeric(), title = character(), p1 = 0, labels = list()))
+  } else {
+    issues <- map_dfr(x$open_issues$nodes, parse_issues_issue)
+  }
+  has_next_page <- x$open_issues$pageInfo$hasNextPage
+  cursor <- x$open_issues$pageInfo$endCursor
+  while (has_next_page) {
+    res <- graphql_query("issues.graphql", owner = x$owner$login, repo = x$repo, cursor = cursor)
+    issues <- bind_rows(issues,
+      map_dfr(res$data$repository$open_issues$nodes, parse_issues_issue))
+
+    has_next_page <- res$data$repository$open_issues$pageInfo$hasNextPage
+    cursor <- res$data$repository$open_issues$pageInfo$endCursor
+  }
+  mutate(issues, owner = x$owner$login, repo = x$repo)
+}
+
 #' Compute an organization summary
 #' @param org A GitHub organization name
 #' @export
 org_summary <- function(org) {
-  res <- graphql_query("summary.json", org = org)
-  map_dfr(res$data$organization$repositories$nodes, parse_repository)
+  res <- graphql_query("repo_summary.graphql", org = org)
+
+  summary <- map_dfr(res$data$organization$repositories$nodes, parse_summary_repository)
+  issues <- map_dfr(res$data$organization$repositories$nodes, parse_issues_repository)
+  #list(summary = map_dfr(res$data$organization$repositories$nodes, parse_repository),
+    #commits = map)
 }
