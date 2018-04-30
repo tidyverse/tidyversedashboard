@@ -33,7 +33,7 @@ parse_pr_repository <- function(x) {
 utils::globalVariables("repo")
 
 #' Compute an pull request reviewer summary
-#' @inheritParams org_summary
+#' @inheritParams org_data
 #' @importFrom dplyr select everything
 #' @export
 org_pr <- function(org) {

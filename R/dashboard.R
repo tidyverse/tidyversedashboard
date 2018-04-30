@@ -65,7 +65,7 @@ parse_issues_repository <- function(x) {
 #' Compute an organization summary
 #' @param org A GitHub organization name
 #' @export
-org_summary <- function(org) {
+org_data <- function(org) {
   res <- graphql_query("repo_summary.graphql", org = org)
 
   summary <- map_dfr(res$data$organization$repositories$nodes, parse_summary_repository)
@@ -73,9 +73,3 @@ org_summary <- function(org) {
   list(summary = summary, issues = issues)
 }
 
-substitute_emoji <- function(x) {
-  m <- gregexpr(":[^[:space:]]+:", x)
-
-  regmatches(x, m) <- lapply(regmatches(x, m), function(xx) map_chr(gsub(":", "", xx), emo::ji))
-  x
-}
