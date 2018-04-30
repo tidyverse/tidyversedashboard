@@ -1,3 +1,17 @@
+paginate_issues <- function(x, f, issues) {
+  has_next_page <- x$open_issues$pageInfo$hasNextPage
+  cursor <- x$open_issues$pageInfo$endCursor
+  while (has_next_page) {
+    res <- graphql_query("issues.graphql", owner = x$owner$login, repo = x$repo, cursor = cursor)
+    issues <- bind_rows(issues,
+      map_dfr(res$data$repository$open_issues$nodes, f))
+
+    has_next_page <- res$data$repository$open_issues$pageInfo$hasNextPage
+    cursor <- res$data$repository$open_issues$pageInfo$endCursor
+  }
+  issues
+}
+
 #' @importFrom purrr map_chr
 parse_summary_issue <- function(x) {
   labels <- map_chr(x$labels$nodes, "name")
@@ -8,12 +22,10 @@ parse_summary_repository <- function(x) {
   if (x$open_issues$totalCount == 0) {
     issues <- list(p1 = 0, bugs = FALSE, features = FALSE, unlabeled = FALSE)
   } else {
-    issues <- map_dfr(x$open_issues$nodes, parse_issue)
+    issues <- map_dfr(x$open_issues$nodes, parse_summary_issue)
   }
-  if (x$open_issues$pageInfo$hasNextPage) {
-    message(x$repo, " has more than 100 open issues!")
-  }
-  #message(x$repo)
+
+  issues <- paginate_issues(x, parse_summary_issue, issues)
 
   tibble::tibble(
     owner = x$owner$login,
@@ -36,23 +48,18 @@ parse_issues_issue <- function(x) {
 
 #' @importFrom dplyr mutate
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr %>%
 parse_issues_repository <- function(x) {
   if (x$open_issues$totalCount == 0) {
-    return(list(org = character(), repo = character(), issue = numeric(), title = character(), p1 = 0, labels = list()))
+    return(list(issue = numeric(), title = character(), updated = as_datetime(list()), p1 = integer(), labels = list()))
   } else {
     issues <- map_dfr(x$open_issues$nodes, parse_issues_issue)
   }
-  has_next_page <- x$open_issues$pageInfo$hasNextPage
-  cursor <- x$open_issues$pageInfo$endCursor
-  while (has_next_page) {
-    res <- graphql_query("issues.graphql", owner = x$owner$login, repo = x$repo, cursor = cursor)
-    issues <- bind_rows(issues,
-      map_dfr(res$data$repository$open_issues$nodes, parse_issues_issue))
 
-    has_next_page <- res$data$repository$open_issues$pageInfo$hasNextPage
-    cursor <- res$data$repository$open_issues$pageInfo$endCursor
-  }
-  mutate(issues, owner = x$owner$login, repo = x$repo)
+  issues <- paginate_issues(x, parse_issues_issue, issues)
+  issues %>%
+    mutate(owner = x$owner$login, repo = x$repo) %>%
+    select(owner, repo, everything())
 }
 
 #' Compute an organization summary
@@ -63,6 +70,12 @@ org_summary <- function(org) {
 
   summary <- map_dfr(res$data$organization$repositories$nodes, parse_summary_repository)
   issues <- map_dfr(res$data$organization$repositories$nodes, parse_issues_repository)
-  #list(summary = map_dfr(res$data$organization$repositories$nodes, parse_repository),
-    #commits = map)
+  list(summary = summary, issues = issues)
+}
+
+substitute_emoji <- function(x) {
+  m <- gregexpr(":[^[:space:]]+:", x)
+
+  regmatches(x, m) <- lapply(regmatches(x, m), function(xx) map_chr(gsub(":", "", xx), emo::ji))
+  x
 }

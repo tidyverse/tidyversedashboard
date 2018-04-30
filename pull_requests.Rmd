@@ -37,16 +37,40 @@ pr_reviewers <- prs %>% select(-author) %>% unique() %>% group_by(reviewer)
 ```
 
 ```{r repo_stats, include = FALSE, cache = TRUE}
-summary_data <- bind_rows(
-  org_summary("tidyverse"),
-  org_summary("r-lib"),
-  org_summary("r-dbi"))
+data <- list(
+  org_data("tidyverse"),
+  org_data("r-lib"),
+  org_data("r-dbi"))
+repo_summary <- bind_rows(map(data, "summary"))
+issues <- bind_rows(map(data, "issues"))
 ```
 
 Repository Statistics
 =====================================
 ```{r}
-datatable(summary_data)
+datatable(repo_summary, filter = "top")
+```
+
+Issues
+=====================================
+```{r}
+substitute_emoji <- function(x) {
+  m <- gregexpr(":[^[:space:]]+:", x)
+
+  regmatches(x, m) <- lapply(regmatches(x, m), function(xx) map_chr(gsub(":", "", xx), emo::ji))
+  x
+}
+
+# linkify the titles, and replace emoji
+issue_table <- mutate(issues,
+  title = glue::glue('<a href="https://github.com/{owner}/{repo}/{issue}">{title}</a>'),
+  labels = substitute_emoji(map_chr(labels, paste, collapse = ", "))) %>%
+  rename("\U1F44D" = p1)
+
+datatable(issue_table,
+  filter = "top",
+  escape = c(-4),
+  rownames = FALSE)
 ```
 
 Pull Request Review counts
