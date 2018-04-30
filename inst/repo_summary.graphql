@@ -30,6 +30,11 @@ query repoSummary($org:String!) {
         watchers : stargazers() {
           totalCount
         }
+        DESCRIPTION : object(expression: "master:DESCRIPTION") {
+          ... on Blob {
+            text
+          }
+        }
       }
     }
   }

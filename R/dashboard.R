@@ -36,7 +36,8 @@ parse_summary_repository <- function(x) {
     p1 = sum(issues$p1),
     bugs = sum(issues$bugs),
     features = sum(issues$features),
-    unlabeled = sum(issues$unlabeled))
+    unlabeled = sum(issues$unlabeled),
+    description = list(desc::desc(text = x$DESCRIPTION$text %||% character())))
 }
 
 
