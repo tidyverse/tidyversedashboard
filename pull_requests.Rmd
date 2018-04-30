@@ -46,7 +46,7 @@ repo_summary <- bind_rows(map(data, "summary"))
 issues <- bind_rows(map(data, "issues"))
 ```
 
-Repository Statistics
+Repository statistics
 =====================================
 ```{r}
 datatable(repo_summary, filter = "top")
@@ -74,7 +74,7 @@ datatable(issue_table,
   rownames = FALSE)
 ```
 
-Pull Request Review counts
+Pull request review counts
 =====================================
 
 Column
