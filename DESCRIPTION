@@ -12,6 +12,7 @@ BugReports: https://github.com/jimhester/tidyversedashboard/issues
 RoxygenNote: 6.0.1.9000
 Imports: 
     dplyr,
+    desc,
     lubridate,
     purrr,
     tibble,
