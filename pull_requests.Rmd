@@ -64,7 +64,7 @@ substitute_emoji <- function(x) {
 
 # linkify the titles, and replace emoji
 issue_table <- mutate(issues,
-  title = glue::glue('<a href="https://github.com/{owner}/{repo}/{issue}">{title}</a>'),
+  title = glue::glue('<a href="https://github.com/{owner}/{repo}/issues/{issue}">{title}</a>'),
   labels = substitute_emoji(map_chr(labels, paste, collapse = ", "))) %>%
   rename("\U1F44D" = p1)
 
