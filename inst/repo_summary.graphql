@@ -7,8 +7,8 @@ query repoSummary($org:String!) {
         open_issues : issues(first:100, states:OPEN) {
           totalCount
           nodes {
-            title
             number
+            title
             updatedAt
             p1 : reactions(content:THUMBS_UP) {
               totalCount
