@@ -22,6 +22,8 @@ library(sparkline)
 ```
 
 ```{r pr_stats, include=FALSE, cache = FALSE}
+options(repos = c(CRAN='https://cloud.r-project.org'))
+
 pr_data <- bind_rows(
   org_pr("r-lib"),
   org_pr("tidyverse"),
