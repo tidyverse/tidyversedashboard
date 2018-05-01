@@ -21,7 +21,7 @@ library(tidyr)
 library(sparkline)
 ```
 
-```{r pr_stats, include=FALSE, cache = TRUE}
+```{r pr_stats, include=FALSE, cache = FALSE}
 pr_data <- bind_rows(
   org_pr("r-lib"),
   org_pr("tidyverse"),
@@ -38,7 +38,7 @@ pr_reviewers <- prs %>% select(-author) %>% unique() %>% group_by(reviewer)
 pr_pairs <- prs %>% na.omit() %>% group_by(author, reviewer) %>% tally(sort = TRUE)
 ```
 
-```{r repo_stats, include = FALSE, cache = TRUE}
+```{r repo_stats, include = FALSE, cache = FALSE}
 data <- list(
   org_data("tidyverse"),
   org_data("r-lib"),
@@ -50,7 +50,6 @@ issues <- bind_rows(map(data, "issues"))
 Repository statistics
 =====================================
 ```{r}
-
 aliases <- c("Jim Hester <james.f.hester@gmail.com>" = "Jim Hester <jim.hester@rstudio.com>", "Jim Hester <james.hester@rstudio.com>", "Gabor Csardi <csardi.gabor@gmail.com>" = "Gábor Csárdi <csardi.gabor@gmail.com>")
 
 remove_aliases <- function(x, y) {
@@ -59,45 +58,21 @@ remove_aliases <- function(x, y) {
   x
 }
 
-num_hard_dependencies <- function(x) {
-  sum(x$get_deps()$type %in% c("Depends", "Imports", "LinkingTo"))
-}
-
-num_soft_dependencies <- function(x) {
-  sum(x$get_deps()$type %in% c("Suggests", "Enhances"))
-}
-
-num_downloads <- function(x, when = "last-week") {
-  # only lookup packages that are valid package names
-  valid_pkgs <- grepl(paste0("^", .standard_regexps()$valid_package_name, "$"), x)
-  res <- cranlogs::cran_downloads(x[valid_pkgs], "last-week")
-  count_per_package <- res %>% group_by(package) %>% tally(wt = count)
-  out <- numeric(length(x))
-  out[valid_pkgs] <- left_join(tibble(package = x[valid_pkgs]), count_per_package)$n
-  out
-}
-
-# This could be slow for many many repos, but for the ~100 or so we have now it
-# is not so bad.
-weekly_commits <- possibly(otherwise = NA_integer_, function(org, package) {
-  map_int(gh::gh("/repos/:org/:package/stats/commit_activity", org = org, package = package), "total")
-})
-
 summary_table <- repo_summary %>%
   rename("\U1F44D" = p1, "package" = "repo") %>%
   mutate(
     #weekly_downloads = num_downloads(.$package, "last-week"),
     maintainer = remove_aliases(map_chr(description, ~ if (length(.x)) .x$get_maintainer()), aliases),
-    hard_deps = map_dbl(description, num_hard_dependencies),
-    soft_deps = map_dbl(description, num_soft_dependencies),
+    reverse_deps = reverse_dependencies(package),
     activity = map2(owner, package, weekly_commits)) %>%
-  select(owner, package, maintainer, watchers, weekly_downloads, hard_deps, soft_deps, open_issues, prs, "\U1F44D", everything(), -description)
+  select(owner, package, maintainer, watchers, reverse_deps, open_issues, prs, "\U1F44D", everything(), -description)
 
 # A custom datatable with a sparkline column
 dt <- datatable(summary_table, filter = "top", rownames = FALSE, escape = FALSE,
   options = list(
+    pageLength = 25,
     columnDefs = list(list(
-        targets = 13,
+        targets = 11,
         render = JS("
           function(data, type, row, meta) {
             return '<span class=spark>' + data + '</span>'
@@ -127,7 +102,8 @@ issue_table <- mutate(issues,
 datatable(issue_table,
   filter = "top",
   escape = c(-4),
-  rownames = FALSE)
+  rownames = FALSE,
+  options = list(pageLength = 25))
 ```
 
 Pull request review counts
@@ -137,19 +113,19 @@ Column
 -------------------------------------
 ### PR authors
 ```{r}
-datatable(tally(pr_authors, sort = TRUE))
+datatable(tally(pr_authors, sort = TRUE), options = list(pageLength = 25))
 ```
 
 Column
 -------------------------------------
 ### PR reviewers
 ```{r}
-datatable(tally(pr_reviewers, sort = TRUE))
+datatable(tally(pr_reviewers, sort = TRUE), options = list(pageLength = 25))
 ```
 
 Column
 -------------------------------------
 ### PR pairs
 ```{r}
-datatable(pr_pairs)
+datatable(pr_pairs, options = list(pageLength = 25))
 ```

@@ -17,4 +17,5 @@ Imports:
     purrr,
     tibble,
     tidyr,
-    gh
+    gh,
+    cranlogs
