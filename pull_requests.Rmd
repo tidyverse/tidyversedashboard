@@ -86,7 +86,7 @@ weekly_commits <- possibly(otherwise = NA_integer_, function(org, package) {
 summary_table <- repo_summary %>%
   rename("\U1F44D" = p1, "package" = "repo") %>%
   mutate(
-    weekly_downloads = num_downloads(.$package, "last-week"),
+    #weekly_downloads = num_downloads(.$package, "last-week"),
     maintainer = remove_aliases(map_chr(description, ~ if (length(.x)) .x$get_maintainer()), aliases),
     hard_deps = map_dbl(description, num_hard_dependencies),
     soft_deps = map_dbl(description, num_soft_dependencies),
