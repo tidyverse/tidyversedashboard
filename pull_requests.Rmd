@@ -130,5 +130,5 @@ Column
 -------------------------------------
 ### PR pairs
 ```{r}
-datatable(tally(pr_pairs, sort = TRUE))
+datatable(pr_pairs)
 ```
