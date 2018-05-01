@@ -68,7 +68,7 @@ dt <- datatable(summary_table, filter = "top", rownames = FALSE, escape = FALSE,
   options = list(
     pageLength = 25,
     columnDefs = list(list(
-        targets = 11,
+        targets = "activity",
         render = JS("
           function(data, type, row, meta) {
             return '<span class=spark>' + data + '</span>'
