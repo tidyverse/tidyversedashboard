@@ -52,20 +52,14 @@ issues <- bind_rows(map(data, "issues"))
 Repository statistics
 =====================================
 ```{r}
-aliases <- c("Jim Hester <james.f.hester@gmail.com>" = "Jim Hester <jim.hester@rstudio.com>", "Jim Hester <james.hester@rstudio.com>", "Gabor Csardi <csardi.gabor@gmail.com>" = "Gábor Csárdi <csardi.gabor@gmail.com>")
-
-remove_aliases <- function(x, y) {
-  m <- x %in% names(y)
-  x[m] <- y[x[m]]
-  x
-}
 
 summary_table <- repo_summary %>%
   rename("\U1F44D" = p1, "package" = "repo") %>%
   mutate(
     #weekly_downloads = num_downloads(.$package, "last-week"),
-    maintainer = remove_aliases(map_chr(description, ~ if (length(.x)) .x$get_maintainer()), aliases),
+    maintainer = desc_maintainer(description),
     reverse_deps = reverse_dependencies(package),
+    dev_deps = desc_dev_deps(description),
     activity = map2(owner, package, weekly_commits)) %>%
   select(owner, package, maintainer, watchers, reverse_deps, open_issues, prs, "\U1F44D", everything(), -description)
 

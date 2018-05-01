@@ -118,3 +118,30 @@ num_downloads <- function(package, when = "last-week") {
 }
 
 utils::globalVariables("count")
+
+#' Return the number of development dependencies in a package description file.
+#' @param description A [desc::desc] object.
+#' @name desc
+#' @export
+desc_dev_deps <- function(description) {
+  map_int(description,
+    ~ if (length(.x))
+      length(.x$get_remotes()))
+}
+
+email_aliases <- c("Jim Hester <james.f.hester@gmail.com>" = "Jim Hester <jim.hester@rstudio.com>", "Jim Hester <james.hester@rstudio.com>", "Gabor Csardi <csardi.gabor@gmail.com>" = "G\u00E1bor Cs\u00E1rdi <csardi.gabor@gmail.com>")
+
+remove_aliases <- function(x, y) {
+  m <- x %in% names(y)
+  x[m] <- y[x[m]]
+  x
+}
+
+#' @rdname desc
+#' @export
+desc_maintainer <- function(description) {
+  res <- map_chr(description,
+    ~ if (length(.x)) .x$get_maintainer())
+
+  remove_aliases(res, email_aliases)
+}
