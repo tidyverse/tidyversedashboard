@@ -1,0 +1,26 @@
+query weekly_issues($query: String!, $cursor: String) {
+  search(query: $query, type: ISSUE, first: 100, after: $cursor) {
+    nodes {
+      type : __typename
+      ... on Issue {
+        repository {
+          name
+        }
+        number
+        closedAt
+        createdAt
+      }
+      ... on PullRequest {
+        repository {
+          name
+        }
+        number
+        closedAt
+        createdAt
+      }
+    }
+    pageInfo {
+      endCursor
+    }
+  }
+}
