@@ -17,6 +17,7 @@ query weekly_issues($query: String!, $cursor: String) {
         number
         closedAt
         createdAt
+        mergedAt
       }
     }
     pageInfo {

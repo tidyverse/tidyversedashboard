@@ -19,6 +19,7 @@ library(DT)
 library(tidyversedashboard)
 library(tidyr)
 library(sparkline)
+library(ggplot2)
 ```
 
 ```{r pr_stats, include=FALSE, cache = FALSE}
@@ -100,6 +101,55 @@ datatable(issue_table,
   escape = c(-4),
   rownames = FALSE,
   options = list(pageLength = 25))
+```
+
+Weekly issues status since `start`
+=====================================
+
+```{r, cache = TRUE, include = FALSE}
+start <- today() - dweeks(1)
+weekly_issue_data <- bind_rows(
+  weekly_issues("tidyverse", start),
+  weekly_issues("r-lib", start),
+  weekly_issues("r-dbi", start))
+
+weekly_issue_data2 <- weekly_issue_data %>% 
+  mutate(
+    type = factor(levels = c("issue", "pull_request"),
+      case_when(
+        type == "Issue" ~ "issue",
+        type == "PullRequest" ~ "pull_request")),
+
+    status = factor(levels = c("merged", "closed", "opened"),
+      case_when(
+        merged >= start ~ "merged",
+        closed >= start ~ "closed",
+        opened >= start ~ "opened",
+        TRUE ~ NA_character_)),
+    event = case_when(
+      status == "merged" ~ merged,
+      status == "closed" ~ closed,
+      status == "opened" ~ opened)
+  )
+```
+
+Column
+-------------------------------------
+```{r}
+weekly_tab <- weekly_issue_data2 %>%
+  group_by(owner,package,type,status) %>%
+  tally(sort = TRUE) %>%
+  na.omit()
+
+datatable(weekly_tab, filter = "top", rownames = FALSE, options = list(pageLength = 25))
+```
+
+Column
+-------------------------------------
+```{r}
+res <- weekly_issue_data2 %>% group_by(type, status) %>% arrange(event) %>% mutate(count = seq_along(number)) %>% select(event, count, status, type) %>% na.omit()
+
+ggplot(res, aes(event, count, color = status, linetype = type)) + geom_line()
 ```
 
 Pull request review counts

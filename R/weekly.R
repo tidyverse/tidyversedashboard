@@ -29,8 +29,8 @@ dfs_idx <- function(x, f) {
 end_cursor <- function(x) is.list(x) && !is.null(x$endCursor)
 
 paginate <- function(f, ...) {
-  out <- append(list(), f(cursor, ...))
-  cursor <- dfs_val(res, end_cursor)[[1]]
+  out <- append(list(), f(NULL, ...))
+  cursor <- dfs_val(out, end_cursor)[[1]]
   while (!is.null(cursor)) {
     res <- f(cursor, ...)
     out <- append(out, res)
@@ -40,13 +40,26 @@ paginate <- function(f, ...) {
 }
 
 parse_weekly_issues <- function(x) {
-  tibble::tibble(package = x$repository$name, type = x$type, number = x$number, closed = as_datetime(x$closedAt %||% NA), opened = as_datetime(x$createdAt %||% NA))
+  tibble::tibble(
+    package = x$repository$name,
+    type = x$type,
+    number = x$number,
+    closed = as_datetime(x$closedAt %||% NA),
+    opened = as_datetime(x$createdAt %||% NA),
+    merged = as_datetime(x$mergedAt %||% NA))
 }
 
+#' Retrieve opened and closed issues and pull requests since a given date
+#'
+#' @param org org to query
+#' @param start Datetime to start query from
 #' @importFrom lubridate today dweeks
+#' @export
 weekly_issues <- function(org, start = today() - dweeks(1)) {
   res <- paginate(function(cursor, ...) {
     graphql_query("weekly_issues.graphql", query = glue::glue("org:{org} updated:>={start} sort:updated-dsc"), cursor = cursor)
   })
-  map_dfr(res, function(x) map_dfr(x$search$nodes, parse_weekly_issues))
+  mutate(
+    map_dfr(res, function(x) map_dfr(x$search$nodes, parse_weekly_issues)),
+    owner = org)
 }
