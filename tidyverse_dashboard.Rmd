@@ -159,8 +159,9 @@ summary_table <- repo_summary %>%
 dt <- data_table(summary_table, escape = FALSE,
   options = list(
     columnDefs = list(
+      list(targets = "_all", orderSequence = c("desc", "asc")),
       list(
-        targets = which(colnames(summary_table) == "activity") - 1L,
+        targets = which(colnames(summary_table) == "activity") - 1,
         render = JS("
           function(data, type, row, meta) {
             return '<span class=spark>' + data + '</span>'

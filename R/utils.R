@@ -16,7 +16,6 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "boo
       columnDefs = list(
         list(targets = "_all", orderSequence = c("desc", "asc"))))
 
-    options <- modifyList(default_opts, list())
-
+    options <- modifyList(options, default_opts)
   datatable(data, ..., options = options, filter = filter, style = style, autoHideNavigation = autoHideNavigation, rownames = rownames)
 }
