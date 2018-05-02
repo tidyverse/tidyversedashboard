@@ -75,7 +75,7 @@ dt <- datatable(summary_table, filter = "top", rownames = FALSE, escape = FALSE,
             return '<span class=spark>' + data + '</span>'
           }"))),
     fnDrawCallback = JS("
-      function (oSettings, json) { $('.spark:not(:has(canvas))').sparkline('html', {width: '100px', lineColor: '#DCAB49', fillColor: '#DBDED3', spotColor: '', minSpotColor: '', maxSpotColor: ''}) }")))
+      function (oSettings, json) { $('.spark:not(:has(canvas))').sparkline('html', {width: '100px', lineColor: '#DCAB49', fillColor: '#DBDED3', spotColor: '', minSpotColor: '', maxSpotColor: ''}) }"))))
 dt$dependencies <- append(dt$dependencies, htmlwidgets::getDependency("sparkline"))
 dt
 ```
