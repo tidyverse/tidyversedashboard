@@ -19,3 +19,5 @@ Imports:
     tidyr,
     gh,
     cranlogs
+Remotes:
+  jeroen/curl

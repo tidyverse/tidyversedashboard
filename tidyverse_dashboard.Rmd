@@ -56,12 +56,12 @@ Repository statistics
 summary_table <- repo_summary %>%
   rename("\U1F44D" = p1, "package" = "repo") %>%
   mutate(
-    #weekly_downloads = num_downloads(.$package, "last-week"),
+    weekly_downloads = num_downloads(.$package, "last-week"),
     maintainer = desc_maintainer(description),
     reverse_deps = reverse_dependencies(package),
     dev_deps = desc_dev_deps(description),
     activity = map2(owner, package, weekly_commits)) %>%
-  select(owner, package, maintainer, watchers, reverse_deps, open_issues, prs, "\U1F44D", everything(), -description)
+  select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, "\U1F44D", everything(), -description)
 
 # A custom datatable with a sparkline column
 dt <- datatable(summary_table, filter = "top", rownames = FALSE, escape = FALSE,
