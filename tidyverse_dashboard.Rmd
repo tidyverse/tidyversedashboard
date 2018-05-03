@@ -56,7 +56,7 @@ issues <- map_dfr(issue_data, "issues")
 ```
 
 
-Issue status summary
+Weekly issue progress
 =====================================
 ```{r weekly_summary, cache = on_macos, include = FALSE}
 start <- today() - dweeks(1)
@@ -86,15 +86,15 @@ weekly_issue_data2 <- weekly_issue_data %>%
 ```
 
 ````{r}
-totals <- weekly_issue_data2 %>% group_by(type, status) %>% tally() %>% na.omit()
+totals <- weekly_issue_data2 %>% group_by(type, status) %>% tally() %>% mutate(n = if_else(status == "closed" | status == "merged", n * -1L, n)) %>% na.omit()
 ```
 
 Row
 ------------------------------
 
-### Issues opened
+### Issues / pull requests opened
 ```{r}
-valueBox(totals %>% filter(type == "issue", status == "opened") %>% pull("n"), icon = "fa-exclamation-circle", color = gh_colors$green)
+valueBox(totals %>% filter(status == "opened") %>% pull("n") %>% sum(), icon = "fa-exclamation-circle", color = gh_colors$green)
 ```
 
 ### Issues closed
@@ -102,11 +102,19 @@ valueBox(totals %>% filter(type == "issue", status == "opened") %>% pull("n"), i
 valueBox(totals %>% filter(type == "issue", status == "closed") %>% pull("n"), icon = "fa-times-circle", color = gh_colors$red)
 ```
 
-### Pull requests merged
+### Pull requests merged / closed
 ```{r}
-valueBox(totals %>% filter(type == "pull_request", status == "merged") %>% pull("n"), icon = "ion-merge", color = gh_colors$purple)
+valueBox(totals %>% filter(type == "pull_request" & (status == "merged" | status == "closed")) %>% pull("n") %>% sum(), icon = "ion-merge", color = gh_colors$purple)
 ```
 
+Row
+-------------------------------------
+
+### Total weekly change
+
+```{r}
+valueBox(sum(totals$n), icon = "fa-exclamation-circle", color = "blue")
+```
 
 Row
 -------------------------------------
@@ -114,28 +122,37 @@ Row
 ### Weekly table
 
 ```{r}
-weekly_tab <- weekly_issue_data2 %>%
-  group_by(owner,package,type,status) %>%
-  tally(sort = TRUE) %>%
+weekly_table <- weekly_issue_data2 %>%
+  # Add maintiner to the table
+  left_join(mutate(repo_summary, maintainer = as.factor(desc_maintainer(description))) %>% 
+              select(repo, maintainer), by = c("package" = "repo")) %>%
+  group_by(type, status) %>%
+  arrange(event) %>%
+  select(package, maintainer, event, status, type) %>%
   na.omit()
 
-data_table(weekly_tab)
+data_table(weekly_table)
 ```
 
 ### Issue status
 
 ```{r}
-res <- weekly_issue_data2 %>%
-  group_by(type, status) %>%
-  arrange(event) %>%
-  mutate(count = seq_along(number)) %>%
-  select(event, count, status, type) %>%
-  na.omit()
 
-ggplot(res, aes(event, count, color = status, linetype = type)) +
-  geom_line() +
-  # These are the colors used for these states on GitHub
-  scale_color_manual(values = c(opened = gh_colors$green, closed = gh_colors$red, merged = gh_colors$purple))
+# ggplot(res, aes(event, count, color = status, linetype = type)) +
+#   geom_line() +
+#   # These are the colors used for these states on GitHub
+#   scale_color_manual(values = c(opened = gh_colors$green, closed = gh_colors$red, merged = gh_colors$purple))
+
+weekly_table_running <-
+  weekly_table %>% group_by(type) %>% mutate(count = case_when(
+    type == "issue" & status == "closed" ~ -1,
+    type == "pull_request" &
+      (status == "merged" | status == "closed") ~ -1,
+    TRUE ~ 1
+  )) %>% mutate(running_total = cumsum(count))
+
+ggplot(weekly_table_running, aes(event, running_total, linetype = type)) +
+  geom_step() + labs(x = NULL, y = "Open Issues")
 ```
 
 > Since `r start`
