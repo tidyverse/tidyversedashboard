@@ -51,7 +51,11 @@ desc_dev_deps <- function(description) {
       length(.x$get_remotes()))
 }
 
-email_aliases <- c("Jim Hester <james.f.hester@gmail.com>" = "Jim Hester <jim.hester@rstudio.com>", "Jim Hester <james.hester@rstudio.com>", "Gabor Csardi <csardi.gabor@gmail.com>" = "G\u00E1bor Cs\u00E1rdi <csardi.gabor@gmail.com>")
+email_aliases <- c(
+  "James Hester <james.hester@rstudio.com>" = "Jim Hester <jim.hester@rstudio.com>",
+  "Jim Hester <james.f.hester@gmail.com>" = "Jim Hester <jim.hester@rstudio.com>",
+  "Jim Hester <james.hester@rstudio.com>" = "Jim Hester <jim.hester@rstudio.com>",
+  "Gabor Csardi <csardi.gabor@gmail.com>" = "G\u00E1bor Cs\u00E1rdi <csardi.gabor@gmail.com>")
 
 remove_aliases <- function(x, y) {
   m <- x %in% names(y)
