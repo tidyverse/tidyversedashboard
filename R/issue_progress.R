@@ -57,8 +57,9 @@ parse_weekly_issues <- function(x) {
 #' @export
 issue_progress <- function(org, start = today() - dweeks(1)) {
   res <- paginate(function(cursor, ...) {
-    graphql_query("weekly_issues.graphql", query = glue::glue("user:{org} fork:false updated:>={start} sort:updated-dsc"), cursor = cursor)
+    graphql_query("weekly_issues.graphql", query = glue::glue("user:{org} updated:>={start} sort:updated-dsc"), cursor = cursor)
   })
+  
   mutate(
     map_dfr(res, function(x) map_dfr(x$search$nodes, parse_weekly_issues)),
     owner = org)
