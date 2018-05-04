@@ -33,9 +33,10 @@ options(repos = c(CRAN='https://cloud.r-project.org'))
 pr_data <- tryCatch(bind_rows(
   org_pr("r-lib"),
   org_pr("tidyverse"),
-  org_pr("r-dbi")), error = function(e) stop(e$content$errors))
+  org_pr("r-dbi")), error = function(e) message(e$content$errors))
 
-prs <- pr_data %>% filter(updated >= today() - ddays(30)) %>%
+if (!is.null(pr_data)) {
+prs <- pr_data %>% filter(updated >= start) %>%
   mutate(reviewer = map2(reviews, comments, function(reviews, comments) unique(c(reviews$reviewer, comments$commenter)))) %>%
   select(owner, repo, number, author, created, updated, reviewer) %>% 
   unnest() %>%
@@ -44,6 +45,11 @@ prs <- pr_data %>% filter(updated >= today() - ddays(30)) %>%
 pr_authors <- prs %>% group_by(author) %>% select(-reviewer) %>% unique() %>% tally(sort = TRUE)
 pr_reviewers <- prs %>% group_by(reviewer) %>% select(-author) %>% unique() %>% tally(sort = TRUE)
 pr_pairs <- prs %>% group_by(author, reviewer) %>% tally(sort = TRUE)
+} else {
+  pr_authors <- NULL
+  pr_reviewers <- NULL
+  pr_pairs <- NULL
+}
 ```
 
 ```{r repo_stats, include = FALSE, cache = on_macos}
