@@ -55,7 +55,7 @@ parse_weekly_issues <- function(x) {
 #' @param start Datetime to start query from
 #' @importFrom lubridate today dweeks
 #' @export
-weekly_issues <- function(org, start = today() - dweeks(1)) {
+issue_progress <- function(org, start = today() - dweeks(1)) {
   res <- paginate(function(cursor, ...) {
     graphql_query("weekly_issues.graphql", query = glue::glue("org:{org} updated:>={start} sort:updated-dsc"), cursor = cursor)
   })
