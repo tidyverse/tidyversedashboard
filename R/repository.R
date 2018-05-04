@@ -27,12 +27,12 @@ parse_summary_repository <- function(x) {
 }
 
 #' Compute an organization summary
-#' @param org A GitHub organization name
+#' @param org A GitHub user, either a normal user or an organization
 #' @export
 org_data <- function(org) {
   res <- graphql_query("repo_summary.graphql", org = org)
 
-  summary <- map_dfr(res$data$organization$repositories$nodes, parse_summary_repository)
-  issues <- map_dfr(res$data$organization$repositories$nodes, parse_issues_repository)
+  summary <- map_dfr(res$data$repositoryOwner$repositories$nodes, parse_summary_repository)
+  issues <- map_dfr(res$data$repositoryOwner$repositories$nodes, parse_issues_repository)
   list(summary = summary, issues = issues)
 }

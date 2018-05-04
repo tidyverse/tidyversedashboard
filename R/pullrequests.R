@@ -44,6 +44,6 @@ org_pr <- function(org) {
   res <- graphql_query("pullrequests.graphql", org = org)
 
   mutate(
-    map_dfr(res$data$organization$repositories$nodes, parse_pr_repository),
+    map_dfr(res$data$repositoryOwner$repositories$nodes, parse_pr_repository),
     owner = org)
 }

@@ -1,6 +1,6 @@
 query repoSummary($org:String!) {
-  organization(login: $org) {
-    repositories(first:100) {
+  repositoryOwner(login: $org) {
+    repositories(first:100, affiliations: OWNER, orderBy: {field: PUSHED_AT, direction: DESC}, isFork: false) {
       nodes {
         owner {login},
         repo:name,
@@ -24,6 +24,7 @@ query repoSummary($org:String!) {
             hasNextPage
           }
         }
+        closed_ l a
         prs : pullRequests(states:OPEN) {
           totalCount
         }

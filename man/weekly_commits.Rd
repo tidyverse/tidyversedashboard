@@ -7,7 +7,7 @@
 weekly_commits(org, package)
 }
 \arguments{
-\item{org}{A GitHub organization name}
+\item{org}{A GitHub user, either a normal user or an organization}
 
 \item{package}{One or more packages to search}
 }

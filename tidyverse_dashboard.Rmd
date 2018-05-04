@@ -142,7 +142,7 @@ issue_progress_table <- issue_data2 %>%
 data_table(issue_progress_table)
 ```
 
-> Issues with status modified in the last `duration` (from `r start`)
+> Issues with status modified (`r start` - `r now()`).
 
 ### Issue status
 
@@ -153,19 +153,19 @@ data_table(issue_progress_table)
 #   # These are the colors used for these states on GitHub
 #   scale_color_manual(values = c(opened = gh_colors$green, closed = gh_colors$red, merged = gh_colors$purple))
 
-issue_table_running <-
-  issue_table %>% group_by(type) %>% mutate(count = case_when(
+issue_progress_running <-
+  issue_progress_table %>% group_by(type) %>% mutate(count = case_when(
     type == "issue" & status == "closed" ~ -1,
     type == "pull_request" &
       (status == "merged" | status == "closed") ~ -1,
     TRUE ~ 1
   )) %>% mutate(running_total = cumsum(count))
 
-ggplot(issue_table_running, aes(event, running_total, linetype = type)) +
+ggplot(issue_progress_running, aes(event, running_total, linetype = type)) +
   geom_step() + labs(x = NULL, y = "Open Issues")
 ```
 
-> `r start` - `now()`
+> `r start` - `r now()`
 
 Repository statistics
 =====================================

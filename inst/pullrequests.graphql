@@ -1,6 +1,6 @@
 query pullRequest($org:String!) {
-  organization(login: $org) {
-    repositories(first: 100, orderBy: {field: PUSHED_AT, direction: DESC}) {
+  repositoryOwner(login: $org) {
+    repositories(first: 100, affiliations: OWNER, orderBy: {field: PUSHED_AT, direction: DESC}, isFork: false) {
       nodes {
         name
         pullRequests(first: 25, orderBy: {field: UPDATED_AT, direction: DESC}) {

@@ -7,7 +7,7 @@
 org_data(org)
 }
 \arguments{
-\item{org}{A GitHub organization name}
+\item{org}{A GitHub user, either a normal user or an organization}
 }
 \description{
 Compute an organization summary
