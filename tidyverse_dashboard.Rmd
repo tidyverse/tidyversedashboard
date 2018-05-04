@@ -26,6 +26,7 @@ gh_colors <- list(
   red = "#CB2434",
   purple = "#6f42c1")
 start <- today() - ddays(30)
+duration <- format(today() - start, format = "%d")
 ```
 
 ```{r pr_stats, include=FALSE, cache = on_macos}
@@ -63,15 +64,15 @@ issues <- map_dfr(issue_data, "issues")
 ```
 
 
-30 day issue progress
+`r duration` issue progress
 =====================================
-```{r weekly_summary, cache = on_macos, include = FALSE}
+```{r issue_progress, cache = on_macos, include = FALSE}
 issue_data <- bind_rows(
   issue_progress("tidyverse", start),
   issue_progress("r-lib", start),
   issue_progress("r-dbi", start))
 
-issue_data2 <- weekly_issue_data %>% 
+issue_data2 <- issue_data %>% 
   mutate(
     type = factor(levels = c("issue", "pull_request"),
       case_when(
@@ -113,7 +114,7 @@ valueBox(totals %>% filter(type == "issue", status == "closed") %>% pull("n"), i
 valueBox(totals %>% filter(type == "pull_request" & (status == "merged" | status == "closed")) %>% pull("n") %>% sum(), icon = "ion-merge", color = gh_colors$purple)
 ```
 
-### Total 30 day change
+### `r duration` change
 
 ```{r}
 valueBox(sum(totals$n), icon = "fa-exclamation-circle", color = "blue")
@@ -122,10 +123,10 @@ valueBox(sum(totals$n), icon = "fa-exclamation-circle", color = "blue")
 Row
 -------------------------------------
 
-### 30 day issues
+### `r duration` progess
 
 ```{r}
-weekly_table <- weekly_issue_data2 %>%
+issue_progress_table <- issue_data2 %>%
   # Add maintiner to the table
     left_join(mutate(repo_summary, maintainer = as.factor(desc_maintainer(description))) %>% 
               select(repo, maintainer), by = c("package" = "repo")) %>%
@@ -134,10 +135,10 @@ weekly_table <- weekly_issue_data2 %>%
   select(package, maintainer, event, status, type) %>%
   na.omit()
 
-data_table(weekly_table)
+data_table(issue_progress_table)
 ```
 
-> Issues with status modified in the last 30 days.
+> Issues with status modified in the last `duration` (from `r start`)
 
 ### Issue status
 
@@ -148,19 +149,19 @@ data_table(weekly_table)
 #   # These are the colors used for these states on GitHub
 #   scale_color_manual(values = c(opened = gh_colors$green, closed = gh_colors$red, merged = gh_colors$purple))
 
-weekly_table_running <-
-  weekly_table %>% group_by(type) %>% mutate(count = case_when(
+issue_table_running <-
+  issue_table %>% group_by(type) %>% mutate(count = case_when(
     type == "issue" & status == "closed" ~ -1,
     type == "pull_request" &
       (status == "merged" | status == "closed") ~ -1,
     TRUE ~ 1
   )) %>% mutate(running_total = cumsum(count))
 
-ggplot(weekly_table_running, aes(event, running_total, linetype = type)) +
+ggplot(issue_table_running, aes(event, running_total, linetype = type)) +
   geom_step() + labs(x = NULL, y = "Open Issues")
 ```
 
-> Since `r start`
+> `r start` - `now()`
 
 Repository statistics
 =====================================
