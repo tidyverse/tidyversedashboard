@@ -24,7 +24,6 @@ query repoSummary($org:String!) {
             hasNextPage
           }
         }
-        closed_ l a
         prs : pullRequests(states:OPEN) {
           totalCount
         }
