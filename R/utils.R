@@ -19,3 +19,5 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "boo
     options <- modifyList(options, default_opts)
   datatable(data, ..., options = options, filter = filter, style = style, autoHideNavigation = autoHideNavigation, rownames = rownames)
 }
+
+`%|||%` <- function(x, y) if (length(x)) x else y

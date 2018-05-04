@@ -35,15 +35,15 @@ pr_data <- bind_rows(
   org_pr("tidyverse"),
   org_pr("r-dbi"))
 
-prs <- pr_data %>%
-  filter(created > today() - ddays(30)) %>%
-  select(repo, number, author, reviewer) %>%
-  filter(is.na(reviewer) | author != reviewer) %>%
-  unique()
+prs <- pr_data %>% filter(updated >= today() - ddays(30)) %>%
+  mutate(reviewer = map2(reviews, comments, function(reviews, comments) unique(c(reviews$reviewer, comments$commenter)))) %>%
+  select(owner, repo, number, author, created, updated, reviewer) %>% 
+  unnest() %>%
+  filter(reviewer != author)
 
-pr_authors <- prs %>% select(-reviewer) %>% unique() %>% group_by(author)
-pr_reviewers <- prs %>% select(-author) %>% unique() %>% group_by(reviewer)
-pr_pairs <- prs %>% na.omit() %>% group_by(author, reviewer) %>% tally(sort = TRUE)
+pr_authors <- prs %>% group_by(author) %>% tally(sort = TRUE)
+pr_reviewers <- prs %>% group_by(reviewer) %>% tally(sort = TRUE)
+pr_pairs <- prs %>% group_by(author, reviewer) %>% tally(sort = TRUE)
 ```
 
 ```{r repo_stats, include = FALSE, cache = on_macos}

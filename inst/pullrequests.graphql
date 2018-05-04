@@ -3,19 +3,28 @@ query pullRequest($org:String!) {
     repositories(first: 100, orderBy: {field: PUSHED_AT, direction: DESC}) {
       nodes {
         name
-        pullRequests(first: 50, orderBy: {field: UPDATED_AT, direction: DESC}) {
+        pullRequests(first: 25, orderBy: {field: UPDATED_AT, direction: DESC}) {
           nodes {
             number
+            createdAt
+            updatedAt
             author {
               login
             }
-            createdAt
-            reviews(first: 10) {
-              nodes {
-                author {
+            reviews(first:10) {
+              nodes{
+                author{
                   login
                 }
                 submittedAt
+              }
+            }
+            comments(first:100){
+              nodes{
+                author {
+                  login
+                }
+                publishedAt
               }
             }
           }
