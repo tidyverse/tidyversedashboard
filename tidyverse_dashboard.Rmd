@@ -30,10 +30,10 @@ gh_colors <- list(
 ```{r pr_stats, include=FALSE, cache = on_macos}
 options(repos = c(CRAN='https://cloud.r-project.org'))
 
-pr_data <- bind_rows(
+pr_data <- tryCatch(bind_rows(
   org_pr("r-lib"),
   org_pr("tidyverse"),
-  org_pr("r-dbi"))
+  org_pr("r-dbi")), error = function(e) stop(e$content$errors))
 
 prs <- pr_data %>% filter(updated >= today() - ddays(30)) %>%
   mutate(reviewer = map2(reviews, comments, function(reviews, comments) unique(c(reviews$reviewer, comments$commenter)))) %>%
@@ -41,8 +41,8 @@ prs <- pr_data %>% filter(updated >= today() - ddays(30)) %>%
   unnest() %>%
   filter(reviewer != author)
 
-pr_authors <- prs %>% group_by(author) %>% tally(sort = TRUE)
-pr_reviewers <- prs %>% group_by(reviewer) %>% tally(sort = TRUE)
+pr_authors <- prs %>% group_by(author) %>% select(-reviewer) %>% unique() %>% tally(sort = TRUE)
+pr_reviewers <- prs %>% group_by(reviewer) %>% select(-author) %>% unique() %>% tally(sort = TRUE)
 pr_pairs <- prs %>% group_by(author, reviewer) %>% tally(sort = TRUE)
 ```
 
@@ -124,7 +124,7 @@ Row
 ```{r}
 weekly_table <- weekly_issue_data2 %>%
   # Add maintiner to the table
-  left_join(mutate(repo_summary, maintainer = as.factor(desc_maintainer(description))) %>% 
+    left_join(mutate(repo_summary, maintainer = as.factor(desc_maintainer(description))) %>% 
               select(repo, maintainer), by = c("package" = "repo")) %>%
   group_by(type, status) %>%
   arrange(event) %>%
