@@ -4,6 +4,15 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: fill
+params:
+  start: 
+    label: Start date of report
+    value: !r lubridate::today() - lubridate::ddays(30)
+    input: date
+  orgs:
+    label: GitHub organizations
+    value: tidyverse, r-lib, r-dbi
+    input: text
 ---
 
 ```{r setup, include = FALSE}
@@ -25,17 +34,17 @@ gh_colors <- list(
   green = "#2cbe4e",
   red = "#CB2434",
   purple = "#6f42c1")
-start <- today() - ddays(30)
+start <- params$start
 duration <- format(today() - start, format = "%d")
+orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
 ```
 
 ```{r pr_stats, include=FALSE, cache = on_macos}
 options(repos = c(CRAN='https://cloud.r-project.org'))
 
-pr_data <- tryCatch(bind_rows(
-  org_pr("r-lib"),
-  org_pr("tidyverse"),
-  org_pr("r-dbi")), error = function(e) message(e$content$errors))
+pr_data <- tryCatch(
+  map_dfr(orgs, org_pr),
+  error = function(e) message(e$content$errors))
 
 if (!is.null(pr_data)) {
 prs <- pr_data %>% filter(updated >= start) %>%
@@ -55,10 +64,8 @@ pr_pairs <- prs %>% group_by(author, reviewer) %>% tally(sort = TRUE)
 ```
 
 ```{r repo_stats, include = FALSE, cache = on_macos}
-issue_data <- list(
-  org_data("tidyverse"),
-  org_data("r-lib"),
-  org_data("r-dbi"))
+issue_data <- map(orgs, org_data)
+
 repo_summary <- map_dfr(issue_data, "summary")
 issues <- map_dfr(issue_data, "issues")
 ```
@@ -67,10 +74,7 @@ issues <- map_dfr(issue_data, "issues")
 `r duration` issue progress
 =====================================
 ```{r issue_progress, cache = on_macos, include = FALSE}
-issue_data <- bind_rows(
-  issue_progress("tidyverse", start),
-  issue_progress("r-lib", start),
-  issue_progress("r-dbi", start))
+issue_data <- map_dfr(orgs, issue_progress, start)
 
 issue_data2 <- issue_data %>% 
   mutate(
