@@ -179,6 +179,8 @@ summary_table <- repo_summary %>%
     maintainer = as.factor(desc_maintainer(description)),
     reverse_deps = reverse_dependencies(package),
     dev_deps = desc_dev_deps(description),
+    travis_status = glue::glue('<a href="https://travis-ci.org/{owner}/{package}"><img src="https://travis-ci.org/{owner}/{package}.svg?branch=master"></a>'),
+    appveyor_status = glue::glue('<a href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>'),
     activity = map2(owner, package, weekly_commits)) %>%
   select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, "\U1F44D", everything(), -description)
 ```
