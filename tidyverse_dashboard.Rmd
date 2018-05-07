@@ -136,10 +136,11 @@ issue_progress_table <- issue_data2 %>%
               select(repo, maintainer), by = c("package" = "repo")) %>%
   group_by(type, status) %>%
   arrange(event) %>%
-  select(package, maintainer, event, status, type) %>%
+  mutate(number = glue::glue('<a href="https://github.com/{owner}/{package}/issues/{number}">{number}</a>')) %>%
+  select(owner, package, number, maintainer, event, status, type) %>%
   na.omit()
 
-data_table(issue_progress_table)
+data_table(issue_progress_table, escape = FALSE)
 ```
 
 > Issues with status modified (`r start` - `r now()`).
