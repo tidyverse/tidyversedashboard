@@ -22,7 +22,6 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "boo
 
 `%|||%` <- function(x, y) if (length(x)) x else y
 
-#' @importFrom lubridate fast_strptime
 parse_datetime_8601 <- function(x) {
-  fast_strptime(x, format = "%Y-%m-%dT%H:%M:%SZ")
+  as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%SZ")
 }
