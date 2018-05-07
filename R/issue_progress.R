@@ -44,9 +44,9 @@ parse_weekly_issues <- function(x) {
     package = x$repository$name,
     type = x$type,
     number = x$number,
-    closed = as_datetime(x$closedAt %||% NA),
-    opened = as_datetime(x$createdAt %||% NA),
-    merged = as_datetime(x$mergedAt %||% NA))
+    closed = parse_datetime_8601(x$closedAt %||% NA),
+    opened = parse_datetime_8601(x$createdAt %||% NA),
+    merged = parse_datetime_8601(x$mergedAt %||% NA))
 }
 
 #' Retrieve opened and closed issues and pull requests since a given date
