@@ -41,9 +41,10 @@ utils::globalVariables("repo")
 #' @export
 org_pr <- function(org) {
   # TODO: paginate repos, comments and maybe pullRequests?
-  res <- graphql_query("pullrequests.graphql", org = org)
+  res <- paginate(function(cursor, ...)
+    graphql_query("pullrequests.graphql", org = org, cursor = cursor))
 
   mutate(
-    map_dfr(res$data$repositoryOwner$repositories$nodes, parse_pr_repository),
+    map_dfr(res, function(x) map_dfr(x$search$nodes, parse_pr_repository)),
     owner = org)
 }
