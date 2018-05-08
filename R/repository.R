@@ -5,34 +5,38 @@ parse_summary_issue <- function(x) {
   list(p1 = x$p1$totalCount %||% 0, bugs = "bug" %in% labels, features = "feature" %in% labels, unlabeled = !length(labels))
 }
 parse_summary_repository <- function(x) {
-  if (x$open_issues$totalCount == 0) {
-    issues <- list(p1 = 0, bugs = FALSE, features = FALSE, unlabeled = FALSE)
-  } else {
-    issues <- map_dfr(x$open_issues$nodes, parse_summary_issue)
-  }
-
-  issues <- paginate_issues(x, parse_summary_issue, issues)
-
   tibble::tibble(
     owner = x$owner$login,
     repo = x$repo,
     prs = x$prs$totalCount,
     watchers = x$watchers$totalCount,
     open_issues = x$open_issues$totalCount,
-    p1 = sum(issues$p1),
-    bugs = sum(issues$bugs),
-    features = sum(issues$features),
-    unlabeled = sum(issues$unlabeled),
     description = list(desc::desc(text = x$DESCRIPTION$text %||% character())))
 }
 
 #' Compute an organization summary
 #' @param org A GitHub user, either a normal user or an organization
 #' @export
+#' @importFrom dplyr group_by summarize left_join
+#' @importFrom tidyr replace_na
 org_data <- function(org) {
-  res <- graphql_query("repo_summary.graphql", org = org)
+  res <- paginate(function(cursor, ...) graphql_query("repo_summary.graphql", org = org, cursor = cursor))
 
-  summary <- map_dfr(res$data$repositoryOwner$repositories$nodes, parse_summary_repository)
-  issues <- map_dfr(res$data$repositoryOwner$repositories$nodes, parse_issues_repository)
+  summary <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_summary_repository))
+  issues <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_issues_repository))
+
+  summary <- left_join(
+    summary,
+    issues %>%
+      group_by(owner, repo) %>%
+      summarize(p1 = sum(p1),
+                bugs = num_label(labels, "bug"),
+                features = num_label(labels, "feature"),
+                unlabeled = sum(lengths(labels) == 0))) %>%
+    replace_na(list(p1 = 0, bugs = 0, features = 0, unlabeled = 0))
+
   list(summary = summary, issues = issues)
+}
+num_label <- function(x, label) {
+  sum(map_lgl(x, ~ any(.x == label)))
 }

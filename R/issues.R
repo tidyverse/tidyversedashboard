@@ -1,13 +1,11 @@
 paginate_issues <- function(x, f, issues) {
-  has_next_page <- x$open_issues$pageInfo$hasNextPage
-  cursor <- x$open_issues$pageInfo$endCursor
-  while (has_next_page) {
+  cursor <- x$open_issues$pageInfo$issue_cursor
+  while (!is.null(cursor)) {
     res <- graphql_query("issues.graphql", owner = x$owner$login, repo = x$repo, cursor = cursor)
     issues <- bind_rows(issues,
       map_dfr(res$data$repository$open_issues$nodes, f))
 
-    has_next_page <- res$data$repository$open_issues$pageInfo$hasNextPage
-    cursor <- res$data$repository$open_issues$pageInfo$endCursor
+    cursor <- res$data$repository$open_issues$pageInfo$issue_cursor
   }
   issues
 }

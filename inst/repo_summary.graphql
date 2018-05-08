@@ -1,6 +1,6 @@
-query repoSummary($org:String!) {
+query repoSummary($org:String!, $cursor:String) {
   repositoryOwner(login: $org) {
-    repositories(first:100, affiliations: OWNER, orderBy: {field: PUSHED_AT, direction: DESC}, isFork: false) {
+    repositories(first:20, affiliations: OWNER, orderBy: {field: PUSHED_AT, direction: DESC}, isFork: false, after: $cursor) {
       nodes {
         owner {login},
         repo:name,
@@ -20,8 +20,7 @@ query repoSummary($org:String!) {
             }
           }
           pageInfo {
-            endCursor
-            hasNextPage
+            issue_cursor : endCursor
           }
         }
         prs : pullRequests(states:OPEN) {
@@ -35,6 +34,9 @@ query repoSummary($org:String!) {
             text
           }
         }
+      }
+      pageInfo {
+        endCursor
       }
     }
   }
