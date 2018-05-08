@@ -1,9 +1,9 @@
 ---
-title: "Tidyverse repository dashboard"
 output:
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: fill
+    theme: paper
 params:
   start: 
     label: Start date of report
@@ -38,6 +38,11 @@ start <- params$start
 duration <- format(today() - start, format = "%d")
 orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
 ```
+
+---
+title: "`r paste0(tools::toTitleCase(orgs[[1]]), ' repository dashboard')`"
+---
+
 
 ```{r pr_stats, include=FALSE, cache = on_macos}
 options(repos = c(CRAN='https://cloud.r-project.org'))
@@ -105,23 +110,28 @@ Row
 
 ### Issues / pull requests opened
 ```{r}
-valueBox(totals %>% filter(status == "opened") %>% pull("n") %>% sum(), icon = "fa-exclamation-circle", color = gh_colors$green)
+valueBox(totals %>% filter(status == "opened") %>% pull("n") %>% sum(), icon = "fa-exclamation-circle", color = "success")
 ```
 
 ### Issues closed
 ```{r}
-valueBox(totals %>% filter(type == "issue", status == "closed") %>% pull("n"), icon = "fa-times-circle", color = gh_colors$red)
+valueBox(totals %>% filter(type == "issue", status == "closed") %>% pull("n") %>% abs(), icon = "fa-times-circle", color = "danger")
 ```
 
 ### Pull requests merged / closed
 ```{r}
-valueBox(totals %>% filter(type == "pull_request" & (status == "merged" | status == "closed")) %>% pull("n") %>% sum(), icon = "ion-merge", color = gh_colors$purple)
+valueBox(totals %>% filter(type == "pull_request" & (status == "merged" | status == "closed")) %>% pull("n") %>% sum() %>% abs(), icon = "ion-merge", color = "info")
 ```
 
 ### `r duration` change
-
 ```{r}
-valueBox(sum(totals$n), icon = "fa-exclamation-circle", color = "blue")
+change <- sum(totals$n)
+valueBox(change, icon = "fa-exclamation-circle", color = if (change > 0) "success" else "danger")
+```
+
+### Remaining open issues
+```{r}
+valueBox(nrow(issues), icon = "fa-exclamation-circle")
 ```
 
 Row
@@ -132,7 +142,7 @@ Row
 ```{r}
 issue_progress_table <- issue_data2 %>%
   # Add maintiner to the table
-    left_join(mutate(repo_summary, maintainer = desc_maintainer(description)) %>% 
+    left_join(mutate(repo_summary, maintainer = desc_maintainer(description)) %>%
               select(repo, maintainer), by = c("package" = "repo")) %>%
   group_by(type, status) %>%
   arrange(event) %>%
