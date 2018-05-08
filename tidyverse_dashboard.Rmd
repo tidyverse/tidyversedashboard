@@ -132,15 +132,14 @@ Row
 ```{r}
 issue_progress_table <- issue_data2 %>%
   # Add maintiner to the table
-    left_join(mutate(repo_summary, maintainer = as.factor(desc_maintainer(description))) %>% 
+    left_join(mutate(repo_summary, maintainer = desc_maintainer(description)) %>% 
               select(repo, maintainer), by = c("package" = "repo")) %>%
   group_by(type, status) %>%
   arrange(event) %>%
-  mutate(number = glue::glue('<a href="https://github.com/{owner}/{package}/issues/{number}">{number}</a>')) %>%
-  select(owner, package, number, maintainer, event, status, type) %>%
+  select(owner, package, issue = number, maintainer, event, status, type) %>%
   na.omit()
 
-data_table(issue_progress_table, escape = FALSE)
+data_table(issue_progress_table)
 ```
 
 > Issues with status modified (`r start` - `r now()`).
@@ -173,34 +172,24 @@ Repository statistics
 
 ```{r repo_summary, cache = on_macos}
 summary_table <- repo_summary %>%
-  rename("\U1F44D" = p1, "package" = "repo") %>%
+  rename(emo::ji("+1") = p1, "package" = "repo") %>%
   mutate(
     weekly_downloads = num_downloads(.$package, "last-week"),
-    maintainer = as.factor(desc_maintainer(description)),
+    maintainer = desc_maintainer(description),
     reverse_deps = reverse_dependencies(package),
     dev_deps = desc_dev_deps(description),
-    travis_status = glue::glue('<a href="https://travis-ci.org/{owner}/{package}"><img src="https://travis-ci.org/{owner}/{package}.svg?branch=master"></a>'),
-    appveyor_status = glue::glue('<a href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>'),
+    travis_status = travis_status_badge(owner, package),
+    appveyor_status = appveyor_status_badge(owner, package),
     activity = map2(owner, package, weekly_commits)) %>%
-  select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, "\U1F44D", everything(), -description)
+  select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, emo::ji("+1"), everything(), -description)
 ```
 
 ```{r}
 # A custom datatable with a sparkline column
-dt <- data_table(summary_table, escape = FALSE,
-  colnames = c("52 week commit activity" = "activity"),
-  options = list(
-    columnDefs = list(
-      list(targets = "_all", orderSequence = c("desc", "asc")),
-      list(
-        targets = which(colnames(summary_table) == "activity") - 1,
-        render = JS("
-          function(data, type, row, meta) {
-            return '<span class=spark>' + data + '</span>'
-          }"))),
-    fnDrawCallback = JS("
-      function (oSettings, json) { $('.spark:not(:has(canvas))').sparkline('html', {width: '100px', lineColor: '#DCAB49', fillColor: '#DBDED3', spotColor: '', minSpotColor: '', maxSpotColor: ''}) }")))
-dt$dependencies <- append(dt$dependencies, htmlwidgets::getDependency("sparkline"))
+dt <- sparkline_table(
+  summary_table,
+  sparkline_column = which(colnames(summary_table) == "activity"),
+  colnames = c("52 week conmmit activity" = "activity"))
 dt
 ```
 
@@ -218,9 +207,9 @@ substitute_emoji <- function(x) {
 issue_table <- mutate(issues,
   title = glue::glue('<a href="https://github.com/{owner}/{repo}/issues/{issue}">{title}</a>'),
   labels = substitute_emoji(map_chr(labels, paste, collapse = ", "))) %>%
-  rename("\U1F44D" = p1)
+  rename(emo::ji("+1") = p1)
 
-data_table(issue_table, escape = -4)
+data_table(issue_table)
 ```
 
 Pull request review counts

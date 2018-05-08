@@ -4,8 +4,8 @@
 \alias{data_table}
 \title{A wrapper around [DT::datatable] to change some defaults}
 \usage{
-data_table(data, options = list(), ..., filter = "top",
-  style = "bootstrap", autoHideNavigation = TRUE, rownames = FALSE)
+data_table(data, options = list(), ..., filter = "top", style = "default",
+  autoHideNavigation = TRUE, rownames = FALSE, escape = FALSE)
 }
 \arguments{
 \item{data}{a data object (either a matrix or a data frame)}
@@ -36,6 +36,13 @@ when the number of total records is less than the page size.}
 \item{rownames}{\code{TRUE} (show row names) or \code{FALSE} (hide row names)
 or a character vector of row names; by default, the row names are displayed
 in the first column of the table if exist (not \code{NULL})}
+
+\item{escape}{whether to escape HTML entities in the table: \code{TRUE} means
+to escape the whole table, and \code{FALSE} means not to escape it;
+alternatively, you can specify numeric column indices or column names to
+indicate which columns to escape, e.g. \code{1:5} (the first 5 columns),
+\code{c(1, 3, 4)}, or \code{c(-1, -3)} (all columns except the first and
+third), or \code{c('Species', 'Sepal.Length')}}
 }
 \description{
 A wrapper around [DT::datatable] to change some defaults

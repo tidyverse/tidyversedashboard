@@ -71,3 +71,18 @@ desc_maintainer <- function(description) {
 
   remove_aliases(res, email_aliases)
 }
+
+#' Generate a status badge
+#' @param owner The repository owner
+#' @param package The package
+#' @name status_badge
+#' @export
+travis_status_badge <- function(owner, package) {
+  glue::glue('<a href="https://travis-ci.org/{owner}/{package}"><img src="https://travis-ci.org/{owner}/{package}.svg?branch=master"></a>')
+}
+
+#' @rdname status_badge
+#' @export
+appveyor_status_badge <- function(owner, package) {
+  glue::glue('<a href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>')
+}
