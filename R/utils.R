@@ -12,13 +12,13 @@ graphql_query <- function(json, ...) {
 # A datatable with some common options set
 data_table <- function(data, options = list(), ..., filter = "top", style = "default", autoHideNavigation = TRUE, rownames = FALSE, escape = FALSE) {
   if (all(c("owner", "package", "issue") %in% colnames(data))) {
-    data$issue <- glue::glue_data(data, '<a href="https://github.com/{owner}/{package}/issues/{issue}">{issue}</a>')
+    data$issue <- glue::glue_data(data, '<a rel="noopener" target="_blank" href="https://github.com/{owner}/{package}/issues/{issue}">{issue}</a>')
   }
   if (all(c("owner", "package") %in% colnames(data))) {
-    data$package <- glue::glue_data(data, '<a href="https://github.com/{owner}/{package}">{package}</a>')
+    data$package <- glue::glue_data(data, '<a rel="noopener" target="_blank" href="https://github.com/{owner}/{package}">{package}</a>')
   }
   if ("owner" %in% colnames(data)) {
-    data$owner <- glue::glue_data(data, '<a href="https://github.com/{owner}">{owner}</a>')
+    data$owner <- glue::glue_data(data, '<a rel="noopener" target="_blank" href="https://github.com/{owner}">{owner}</a>')
   }
   default_opts <- list(pageLength = 25,
     dom = "tip",

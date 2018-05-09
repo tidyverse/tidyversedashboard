@@ -78,18 +78,18 @@ desc_maintainer <- function(description) {
 #' @name status_badge
 #' @export
 travis_status_badge <- function(owner, package) {
-  glue::glue('<a href="https://travis-ci.org/{owner}/{package}"><img src="https://travis-ci.org/{owner}/{package}.svg?branch=master"></a>')
+  glue::glue('<a rel="noopener" target="_blank" href="https://travis-ci.org/{owner}/{package}"><img src="https://travis-ci.org/{owner}/{package}.svg?branch=master"></a>')
 }
 
 #' @rdname status_badge
 #' @export
 appveyor_status_badge <- function(owner, package) {
-  glue::glue('<a href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>')
+  glue::glue('<a rel="noopener" target="_blank" href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>')
 }
 
 #' Return github user name homepage link
 #' @param username
 #' @export
 github_user_home <- function(username) {
-  glue::glue('<a href="https://www.github.com/{username}">{username}</a>')
+  glue::glue('<a rel="noopener" target="_blank" href="https://github.com/{username}">{username}</a>')
 }

@@ -4,6 +4,7 @@ output:
     orientation: rows
     vertical_layout: fill
     theme: paper
+    source_code: "https://github.com/jimhester/tidyversedashboard"
 params:
   start: 
     label: Start date of report
@@ -212,7 +213,7 @@ substitute_emoji <- function(x) {
 
 # linkify the titles, and replace emoji
 issue_table <- mutate(issues,
-  title = glue::glue('<a href="https://github.com/{owner}/{repo}/issues/{issue}">{title}</a>'),
+  title = glue::glue('<a rel="noopener" target="_blank" href="https://github.com/{owner}/{repo}/issues/{issue}">{title}</a>'),
   labels = substitute_emoji(map_chr(labels, paste, collapse = ", "))) %>%
   rename(!!emo::ji("+1") := p1)
 
