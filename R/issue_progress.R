@@ -43,7 +43,7 @@ parse_weekly_issues <- function(x) {
   tibble::tibble(
     package = x$repository$name,
     type = x$type,
-    number = x$number,
+    issue = x$number,
     closed = parse_datetime_8601(x$closedAt %||% NA),
     opened = parse_datetime_8601(x$createdAt %||% NA),
     merged = parse_datetime_8601(x$mergedAt %||% NA))

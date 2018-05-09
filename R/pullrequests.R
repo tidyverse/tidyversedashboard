@@ -13,7 +13,7 @@ parse_pr_prs <- function(x) {
   comments <- map_dfr(x$comments$nodes, parse_pr_comments) %|||% tibble(commenter = character(), commented = parse_datetime_8601(character()))
 
   tibble(
-    number = x$number,
+    issue = x$number,
     author = x$author$login %||% NA_character_,
     created = parse_datetime_8601(x$createdAt %||% NA_character_),
     updated = parse_datetime_8601(x$updatedAt %||% NA_character_),

@@ -12,7 +12,7 @@ graphql_query <- function(json, ...) {
 # A datatable with some common options set
 data_table <- function(data, options = list(), ..., filter = "top", style = "default", autoHideNavigation = TRUE, rownames = FALSE, escape = FALSE) {
   if (all(c("owner", "package", "issue") %in% colnames(data))) {
-    data$issue <- glue::glue_data(data, '<a href="https://github.com/{owner}/{package}/issues/{number}">{number}</a>')
+    data$issue <- glue::glue_data(data, '<a href="https://github.com/{owner}/{package}/issues/{issue}">{issue}</a>')
   }
   if (all(c("owner", "package") %in% colnames(data))) {
     data$package <- glue::glue_data(data, '<a href="https://github.com/{owner}/{package}">{package}</a>')
@@ -26,7 +26,15 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "def
       list(targets = "_all", orderSequence = c("desc", "asc"))))
 
   options <- modifyList(options, default_opts)
-  datatable(data, ..., options = options, filter = filter, style = style, autoHideNavigation = autoHideNavigation, rownames = rownames)
+  datatable(data,
+    ...,
+    options = options,
+    filter = filter,
+    style = style,
+    autoHideNavigation = autoHideNavigation,
+    rownames = rownames,
+    escape = escape) %>%
+  formatDate(which(map_lgl(data, inherits, "POSIXct")), "toLocaleString")
 }
 
 #' Plot a sparkline table

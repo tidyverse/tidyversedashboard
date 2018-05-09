@@ -86,3 +86,10 @@ travis_status_badge <- function(owner, package) {
 appveyor_status_badge <- function(owner, package) {
   glue::glue('<a href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>')
 }
+
+#' Return github user name homepage link
+#' @param username
+#' @export
+github_user_home <- function(username) {
+  glue::glue('<a href="https://www.github.com/{username}">{username}</a>')
+}
