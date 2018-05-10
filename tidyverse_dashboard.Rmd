@@ -1,6 +1,8 @@
 ---
 output:
   flexdashboard::flex_dashboard:
+    logo: logo.png
+    favicon: logo.png
     orientation: rows
     vertical_layout: fill
     theme: paper
@@ -38,6 +40,7 @@ gh_colors <- list(
 start <- params$start
 duration <- format(today() - start, format = "%d")
 orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
+tidyversedashboard::get_org_logo(orgs[[1]])
 ```
 
 ---
