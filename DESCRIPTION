@@ -18,6 +18,7 @@ Imports:
     tibble,
     tidyr,
     gh,
-    cranlogs
+    cranlogs,
+    magick
 Remotes:
   jeroen/curl

@@ -70,3 +70,19 @@ sparkline_table <- function(data, sparkline_column, ...) {
 parse_datetime_8601 <- function(x) {
   as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%SZ")
 }
+
+#' Get org logo
+#'
+#' @param org 
+#'
+#' @return writes the avatar as a local file logo.png
+#' @export
+#'
+#' @examples
+#' get_org_logo("r-lib")
+get_org_logo <- function(org){
+  glue::glue("https://github.com/{org}.png") %>%
+    magick::image_read() %>%
+    magick::image_resize("48x48") %>%
+    magick::image_write("logo.png")
+}
