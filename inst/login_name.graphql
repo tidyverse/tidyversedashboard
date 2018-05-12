@@ -1,0 +1,10 @@
+query orgName($org:String!) {
+  repositoryOwner(login: $org) {
+    ... on User {
+      name
+    }
+    ... on Organization {
+      name
+    }
+  }
+}

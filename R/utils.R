@@ -86,3 +86,18 @@ get_org_logo <- function(org){
     magick::image_resize("48x48") %>%
     magick::image_write("logo.png")
 }
+
+#' Get org name
+#'
+#' @param org Org or user login 
+#'
+#' @return string
+#' @export
+#'
+#' @examples
+#' get_org_name("r-lib")
+#' get_org_name("jimhester")
+get_org_name <- function(org){
+  res <- graphql_query("login_name.graphql", org = org)
+  res$data$repositoryOwner$name
+}

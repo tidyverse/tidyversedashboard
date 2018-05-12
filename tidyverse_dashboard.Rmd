@@ -44,7 +44,7 @@ tidyversedashboard::get_org_logo(orgs[[1]])
 ```
 
 ---
-title: "`r paste0(tools::toTitleCase(orgs[[1]]), ' repository dashboard')`"
+title: "`r paste0(tidyversedashboard::get_org_name(orgs[[1]]), "'s repository dashboard")`"
 ---
 
 
@@ -183,7 +183,7 @@ Repository summary
 
 ```{r repo_summary, cache = on_macos}
 summary_table <- repo_summary %>%
-  rename(!!emo::ji("+1") := p1, "package" = "repo") %>%
+  rename("package" = "repo") %>%
   mutate(
     weekly_downloads = num_downloads(.$package, "last-week"),
     maintainer = desc_maintainer(description),
@@ -192,7 +192,8 @@ summary_table <- repo_summary %>%
     travis_status = travis_status_badge(owner, package),
     appveyor_status = appveyor_status_badge(owner, package),
     activity = map2(owner, package, weekly_commits)) %>%
-  select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, emo::ji("+1"), everything(), -description)
+  select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, p1, everything(), -description) %>%
+  rename(!!emo::ji("+1") := p1)
 ```
 
 ```{r}
