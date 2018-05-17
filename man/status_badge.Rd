@@ -4,11 +4,14 @@
 \alias{status_badge}
 \alias{travis_status_badge}
 \alias{appveyor_status_badge}
+\alias{cran_status_badge}
 \title{Generate a status badge}
 \usage{
 travis_status_badge(owner, package)
 
 appveyor_status_badge(owner, package)
+
+cran_status_badge(package)
 }
 \arguments{
 \item{owner}{The repository owner}

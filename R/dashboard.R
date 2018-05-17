@@ -87,8 +87,14 @@ appveyor_status_badge <- function(owner, package) {
   glue::glue('<a rel="noopener" target="_blank" href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>')
 }
 
+#' @rdname status_badge
+#' @export
+cran_status_badge <- function(package) {
+  glue::glue('<a rel="noopener" target="_blank" href="https://cran.r-project.org/web/checks/check_results_{package}.html"><img src="https://cranchecks.info/badges/worst/{package}"></a>')
+}
+
 #' Return github user name homepage link
-#' @param username
+#' @param username github username
 #' @export
 github_user_home <- function(username) {
   glue::glue('<a rel="noopener" target="_blank" href="https://github.com/{username}">{username}</a>')
