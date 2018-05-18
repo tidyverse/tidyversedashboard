@@ -52,7 +52,7 @@ p1 <- "\U0001f44d"
 ```
 
 ---
-title: "`r paste0(tidyversedashboard::get_org_name(orgs[[1]]), "'s repository dashboard")`"
+title: "`r paste0(tidyversedashboard::get_org_name(orgs[[1]]), " repository dashboard")`"
 ---
 
 
