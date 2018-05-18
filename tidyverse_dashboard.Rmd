@@ -42,7 +42,7 @@ gh_colors <- list(
 start <- params$start
 duration <- format(today() - start, format = "%d")
 orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
-privacy <- normalize_privacy(privacy)
+privacy <- normalize_privacy(params$privacy)
 ```
 
 ---
