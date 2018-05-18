@@ -1,6 +1,8 @@
 ---
 output:
   flexdashboard::flex_dashboard:
+    logo: logo.png
+    favicon: logo.png
     orientation: rows
     vertical_layout: fill
     theme: paper
@@ -43,10 +45,14 @@ start <- params$start
 duration <- format(today() - start, format = "%d")
 orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
 privacy <- normalize_privacy(params$privacy)
+tidyversedashboard::get_org_logo(orgs[[1]])
+
+# plus1 emoji
+p1 <- "\U0001f44d"
 ```
 
 ---
-title: "`r paste0(tools::toTitleCase(orgs[[1]]), ' repository dashboard')`"
+title: "`r paste0(tidyversedashboard::get_org_name(orgs[[1]]), "'s repository dashboard")`"
 ---
 
 
@@ -185,7 +191,7 @@ Repository summary
 
 ```{r repo_summary, cache = on_macos}
 summary_table <- repo_summary %>%
-  rename(!!emo::ji("+1") := p1, "package" = "repo") %>%
+  rename("package" = "repo") %>%
   mutate(
     weekly_downloads = num_downloads(.$package, "last-week"),
     maintainer = desc_maintainer(description),
@@ -195,7 +201,8 @@ summary_table <- repo_summary %>%
     appveyor_status = appveyor_status_badge(owner, package),
     cran_status = cran_status_badge(package),
     activity = map2(owner, package, weekly_commits)) %>%
-  select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, emo::ji("+1"), everything(), -description)
+  select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, p1, everything(), -description) %>%
+  rename(!!p1 := p1)
 ```
 
 ```{r}
@@ -221,7 +228,7 @@ substitute_emoji <- function(x) {
 issue_table <- mutate(issues,
   title = glue::glue('<a rel="noopener" target="_blank" href="https://github.com/{owner}/{repo}/issues/{issue}">{title}</a>'),
   labels = substitute_emoji(map_chr(labels, paste, collapse = ", "))) %>%
-  rename(!!emo::ji("+1") := p1)
+  rename(!!p1 := p1)
 
 data_table(issue_table)
 ```

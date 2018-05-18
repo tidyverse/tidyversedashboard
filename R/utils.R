@@ -73,3 +73,34 @@ sparkline_table <- function(data, sparkline_column, ...) {
 parse_datetime_8601 <- function(x) {
   as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%SZ")
 }
+
+#' Get org logo
+#'
+#' @param org 
+#'
+#' @return writes the avatar as a local file logo.png
+#' @export
+#'
+#' @examples
+#' get_org_logo("r-lib")
+get_org_logo <- function(org){
+  glue::glue("https://github.com/{org}.png") %>%
+    magick::image_read() %>%
+    magick::image_resize("48x48") %>%
+    magick::image_write("logo.png")
+}
+
+#' Get org name
+#'
+#' @param org Org or user login 
+#'
+#' @return string
+#' @export
+#'
+#' @examples
+#' get_org_name("r-lib")
+#' get_org_name("jimhester")
+get_org_name <- function(org){
+  res <- graphql_query("login_name.graphql", org = org)
+  res$data$repositoryOwner$name
+}
