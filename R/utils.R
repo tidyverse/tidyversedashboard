@@ -6,7 +6,9 @@ graphql_query <- function(json, ...) {
 }
 
 #' A wrapper around [DT::datatable] to change some defaults
-#' @importFrom DT datatable
+#' @importFrom DT datatable formatDate
+#' @importFrom utils modifyList
+#' @importFrom purrr map_lgl possibly
 #' @inheritParams DT::datatable
 #' @export
 # A datatable with some common options set
@@ -39,6 +41,7 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "def
 
 #' Plot a sparkline table
 #' @inheritParams DT::datatable
+#' @importFrom DT JS
 #' @param sparkline_column The column to convert to a sparkline
 #' @export
 sparkline_table <- function(data, sparkline_column, ...) {

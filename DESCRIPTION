@@ -13,6 +13,9 @@ RoxygenNote: 6.0.1.9000
 Imports: 
     dplyr,
     desc,
+    DT,
+    glue,
+    htmlwidgets,
     lubridate,
     purrr,
     tibble,
