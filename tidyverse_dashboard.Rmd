@@ -41,6 +41,9 @@ start <- params$start
 duration <- format(today() - start, format = "%d")
 orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
 tidyversedashboard::get_org_logo(orgs[[1]])
+
+# plus1 emoji
+p1 <- "\U0001f44d"
 ```
 
 ---
@@ -193,7 +196,7 @@ summary_table <- repo_summary %>%
     appveyor_status = appveyor_status_badge(owner, package),
     activity = map2(owner, package, weekly_commits)) %>%
   select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, p1, everything(), -description) %>%
-  rename(!!emo::ji("+1") := p1)
+  rename(!!p1 := p1)
 ```
 
 ```{r}
@@ -219,7 +222,7 @@ substitute_emoji <- function(x) {
 issue_table <- mutate(issues,
   title = glue::glue('<a rel="noopener" target="_blank" href="https://github.com/{owner}/{repo}/issues/{issue}">{title}</a>'),
   labels = substitute_emoji(map_chr(labels, paste, collapse = ", "))) %>%
-  rename(!!emo::ji("+1") := p1)
+  rename(!!p1 := p1)
 
 data_table(issue_table)
 ```
