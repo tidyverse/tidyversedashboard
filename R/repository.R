@@ -16,11 +16,14 @@ parse_summary_repository <- function(x) {
 
 #' Compute an organization summary
 #' @param org A GitHub user, either a normal user or an organization
+#' @param privacy The repository privacy
 #' @export
 #' @importFrom dplyr group_by summarize left_join
 #' @importFrom tidyr replace_na
-org_data <- function(org) {
-  res <- paginate(function(cursor, ...) graphql_query("repo_summary.graphql", org = org, cursor = cursor))
+org_data <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
+  privacy <- normalize_privacy(privacy)
+
+  res <- paginate(function(cursor, ...) graphql_query("repo_summary.graphql", org = org, cursor = cursor, privacy = privacy))
 
   summary <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_summary_repository))
   issues <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_issues_repository))

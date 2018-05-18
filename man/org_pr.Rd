@@ -4,10 +4,12 @@
 \alias{org_pr}
 \title{Compute an pull request reviewer summary}
 \usage{
-org_pr(org)
+org_pr(org, privacy = c("PUBLIC", "PRIVATE", "BOTH"))
 }
 \arguments{
 \item{org}{A GitHub user, either a normal user or an organization}
+
+\item{privacy}{The repository privacy}
 }
 \description{
 Compute an pull request reviewer summary

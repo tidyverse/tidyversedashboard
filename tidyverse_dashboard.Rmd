@@ -14,6 +14,10 @@ params:
     label: GitHub organizations
     value: tidyverse, r-lib, r-dbi
     input: text
+  privacy:
+    label: Repository Privacy
+    value: PUBLIC
+    choices: [PUBLIC, PRIVATE, BOTH]
 ---
 
 ```{r setup, include = FALSE}
@@ -38,6 +42,7 @@ gh_colors <- list(
 start <- params$start
 duration <- format(today() - start, format = "%d")
 orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
+privacy <- normalize_privacy(privacy)
 ```
 
 ---
@@ -49,7 +54,7 @@ title: "`r paste0(tools::toTitleCase(orgs[[1]]), ' repository dashboard')`"
 options(repos = c(CRAN='https://cloud.r-project.org'))
 
 pr_data <- tryCatch(
-  map_dfr(orgs, org_pr),
+  map_dfr(orgs, org_pr, privacy = privacy),
   error = function(e) message(e$content$errors))
 
 if (!is.null(pr_data)) {
@@ -73,7 +78,7 @@ if (!is.null(pr_data)) {
 ```
 
 ```{r repo_stats, include = FALSE, cache = on_macos}
-repo_data <- map(orgs, org_data)
+repo_data <- map(orgs, org_data, privacy)
 
 repo_summary <- map_dfr(repo_data, "summary")
 issues <- map_dfr(repo_data, "issues")
@@ -83,7 +88,7 @@ issues <- map_dfr(repo_data, "issues")
 `r duration` issue progress
 =====================================
 ```{r issue_progress, cache = on_macos, include = FALSE}
-issue_data <- map_dfr(orgs, issue_progress, start)
+issue_data <- map_dfr(orgs, issue_progress, start, privacy)
 
 issue_data2 <- issue_data %>% 
   mutate(

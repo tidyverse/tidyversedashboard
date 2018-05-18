@@ -4,12 +4,15 @@
 \alias{issue_progress}
 \title{Retrieve opened and closed issues and pull requests since a given date}
 \usage{
-issue_progress(org, start = today() - dweeks(1))
+issue_progress(org, start = today() - dweeks(1), privacy = c("PUBLIC",
+  "PRIVATE", "BOTH"))
 }
 \arguments{
-\item{org}{org to query}
+\item{org}{A GitHub user, either a normal user or an organization}
 
 \item{start}{Datetime to start query from}
+
+\item{privacy}{The repository privacy}
 }
 \description{
 Retrieve opened and closed issues and pull requests since a given date

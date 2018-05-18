@@ -99,3 +99,12 @@ cran_status_badge <- function(package) {
 github_user_home <- function(username) {
   glue::glue('<a rel="noopener" target="_blank" href="https://github.com/{username}">{username}</a>')
 }
+
+#' Normalize the repository privacy
+#' @param Github repository privacy
+#' @export
+normalize_privacy <- function(privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
+  privacy <- match.arg(privacy)
+  if (privacy == "BOTH") privacy <- NULL
+  privacy
+}

@@ -32,4 +32,3 @@ parse_issues_repository <- function(x) {
     select(owner, repo, everything())
 }
 utils::globalVariables("owner")
-

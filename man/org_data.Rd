@@ -4,10 +4,12 @@
 \alias{org_data}
 \title{Compute an organization summary}
 \usage{
-org_data(org)
+org_data(org, privacy = c("PUBLIC", "PRIVATE", "BOTH"))
 }
 \arguments{
 \item{org}{A GitHub user, either a normal user or an organization}
+
+\item{privacy}{The repository privacy}
 }
 \description{
 Compute an organization summary

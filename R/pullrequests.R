@@ -38,11 +38,12 @@ utils::globalVariables("repo")
 #' @inheritParams org_data
 #' @importFrom dplyr select everything
 #' @export
-org_pr <- function(org) {
-  # TODO: paginate repos, comments and maybe pullRequests?
+org_pr <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
+  privacy <- normalize_privacy(privacy)
+
   res <- paginate(function(cursor, ...)
-    graphql_query("pullrequests.graphql", org = org, cursor = cursor))
-  
+    graphql_query("pullrequests.graphql", org = org, cursor = cursor, privacy = privacy))
+
   mutate(
     map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_pr_repository)),
     owner = org)

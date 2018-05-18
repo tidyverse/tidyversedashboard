@@ -51,15 +51,21 @@ parse_weekly_issues <- function(x) {
 
 #' Retrieve opened and closed issues and pull requests since a given date
 #'
-#' @param org org to query
 #' @param start Datetime to start query from
+#' @inheritParams org_data
 #' @importFrom lubridate today dweeks
 #' @export
-issue_progress <- function(org, start = today() - dweeks(1)) {
+issue_progress <- function(org, start = today() - dweeks(1), privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
+  privacy <- normalize_privacy(privacy)
+  query <- glue::glue("user:{org} updated:>={start} sort:updated-dsc")
+
+  if (!is.null(privacy)) {
+    query <- glue::glue("{query} is:{tolower(privacy)}")
+  }
   res <- paginate(function(cursor, ...) {
-    graphql_query("weekly_issues.graphql", query = glue::glue("user:{org} updated:>={start} sort:updated-dsc"), cursor = cursor)
+    graphql_query("weekly_issues.graphql", query = query, cursor = cursor)
   })
-  
+
   mutate(
     map_dfr(res, function(x) map_dfr(x$search$nodes, parse_weekly_issues)),
     owner = org)
