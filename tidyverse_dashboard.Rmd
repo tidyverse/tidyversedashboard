@@ -1,8 +1,6 @@
 ---
 output:
   flexdashboard::flex_dashboard:
-    logo: logo.png
-    favicon: logo.png
     orientation: rows
     vertical_layout: fill
     theme: paper
@@ -45,7 +43,6 @@ start <- params$start
 duration <- format(today() - start, format = "%d")
 orgs <- scan(text = params$orgs, what = "character", sep = ",", strip.white = TRUE, quiet = TRUE)
 privacy <- normalize_privacy(params$privacy)
-tidyversedashboard::get_org_logo(orgs[[1]])
 
 # plus1 emoji
 p1 <- "\U0001f44d"
