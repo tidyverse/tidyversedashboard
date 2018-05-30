@@ -43,3 +43,4 @@ org_data <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
 num_label <- function(x, label) {
   sum(map_lgl(x, ~ any(.x == label)))
 }
+

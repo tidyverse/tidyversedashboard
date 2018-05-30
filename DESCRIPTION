@@ -22,6 +22,7 @@ Imports:
     tidyr,
     gh,
     cranlogs,
-    magick
+    magick,
+    codemetar
 Remotes:
   jeroen/curl

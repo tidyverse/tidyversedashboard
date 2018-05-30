@@ -104,3 +104,4 @@ get_org_name <- function(org){
   res <- graphql_query("login_name.graphql", org = org)
   res$data$repositoryOwner$name
 }
+

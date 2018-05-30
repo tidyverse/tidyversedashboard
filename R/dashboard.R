@@ -93,6 +93,52 @@ cran_status_badge <- function(package) {
   glue::glue('<a rel="noopener" target="_blank" href="https://cran.r-project.org/web/checks/check_results_{package}.html"><img src="https://cranchecks.info/badges/worst/{package}"></a>')
 }
 
+# Adapted from codemetar
+# https://github.com/ropensci/codemetar/blob/7ce13ba50a439b7b9accd8b694bd486c23685384/R/guess_metadata.R#L74
+
+
+#' Generate a repo status badge
+#' @param owner The repository owner
+#' @param package The package
+#' @name repo_status_badge
+#' @export
+repo_status_badge <- function(owner, package) {
+  readme <- guess_readme(owner, package)
+  if(!is.null(readme)){
+    badges <- codemetar::extract_badges(readme)
+    status_badge <- badges[grepl("Project Status", badges$text)|
+                             grepl("lifecycle", badges$text),]
+    if (!is.null(status_badge)) {
+      if(nrow(status_badge) >0){
+        glue::glue('<a rel="noopener" target="_blank" href="{status_badge$link}"><img src="{status_badge$image_link}"></a>')
+        
+      }else {
+        return('')
+      }
+    } else {
+      return('')
+    }
+  }else{
+    return('')
+  }
+  
+}
+
+# from codemetar
+# https://github.com/ropensci/codemetar/blob/7ce13ba50a439b7b9accd8b694bd486c23685384/R/guess_metadata.R#L157
+guess_readme <- function(owner, package){
+  readme <- try(gh::gh("GET /repos/:owner/:repo/readme",
+                       owner = owner, repo = package),
+                silent = TRUE)
+  if(inherits(readme, "try-error")){
+    NULL
+  }else{
+    readme$download_url
+  }
+  
+}
+
+
 #' Return github user name homepage link
 #' @param username github username
 #' @export

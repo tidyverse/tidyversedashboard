@@ -197,6 +197,7 @@ summary_table <- repo_summary %>%
     travis_status = travis_status_badge(owner, package),
     appveyor_status = appveyor_status_badge(owner, package),
     cran_status = cran_status_badge(package),
+    repo_status = repo_status_badge(owner, package),
     activity = map2(owner, package, weekly_commits)) %>%
   select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, p1, everything(), -description) %>%
   rename(!!p1 := p1)
