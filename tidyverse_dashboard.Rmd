@@ -61,11 +61,11 @@ pr_data <- tryCatch(
   error = function(e) message(e$content$errors))
 
 if (!is.null(pr_data)) {
-  prs <- pr_data %>% filter(updated >= start, reviewer != "codecov-io") %>%
+  prs <- pr_data %>% filter(updated >= start) %>%
     mutate(reviewer = map2(reviews, comments, function(reviews, comments) unique(c(reviews$reviewer, comments$commenter)))) %>%
     select(owner, repo, issue, author, created, updated, reviewer) %>%
     unnest() %>%
-    filter(reviewer != author) %>%
+    filter(reviewer != author, reviewer != "codecov.io") %>%
     mutate(
       reviewer = github_user_home(reviewer),
       author = github_user_home(author))
