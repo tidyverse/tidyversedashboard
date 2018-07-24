@@ -177,11 +177,24 @@ issue_progress_running <-
     TRUE ~ 1
   )) %>% mutate(running_total = cumsum(count))
 
+library(nycflights13)
+library(dplyr)
+
+largest_groups <- function(x, n = 5) {
+  groups <- min_rank(desc(group_size(x))) <= n
+  x[group_indices(x) %in% which(groups), ]
+}
+
 issue_progress_running %>%
-  group_by(maintainer) -> t1 %>%
-  filter(n() > 10) -> t2
-ggplot(ungroup(t2), aes(event, running_total, linetype = type, color = maintainer)) +
-  geom_step() + labs(x = NULL, y = "Open Issues", color = "type")
+  group_by(maintainer) %>%
+  largest_groups(9) %>%
+  ungroup() %>%
+  mutate(maintainer = sub("<.*", "", maintainer)) %>%
+  ggplot(aes(event, running_total, color = maintainer, group = type)) +
+    geom_step() +
+    labs(x = NULL, y = "Open Issues", color = "package maintaner") +
+    facet_wrap(~type) +
+    scale_color_brewer(type = "qual", palette = "Set1")
 ```
 
 > `r start` - `r now()`
