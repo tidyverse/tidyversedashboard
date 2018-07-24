@@ -177,8 +177,11 @@ issue_progress_running <-
     TRUE ~ 1
   )) %>% mutate(running_total = cumsum(count))
 
-ggplot(issue_progress_running, aes(event, running_total, linetype = type)) +
-  geom_step() + labs(x = NULL, y = "Open Issues")
+issue_progress_running %>%
+  group_by(maintainer) -> t1 %>%
+  filter(n() > 10) -> t2
+ggplot(ungroup(t2), aes(event, running_total, linetype = type, color = maintainer)) +
+  geom_step() + labs(x = NULL, y = "Open Issues", color = "type")
 ```
 
 > `r start` - `r now()`
