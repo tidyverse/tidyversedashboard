@@ -24,4 +24,5 @@ Imports:
     cranlogs,
     magick
 Remotes:
-  jeroen/curl
+  jeroen/curl,
+  rstudio/rmarkdown
