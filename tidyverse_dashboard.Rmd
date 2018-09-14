@@ -6,13 +6,17 @@ output:
     theme: paper
     source_code: "https://github.com/jimhester/tidyversedashboard"
 params:
+  title:
+    label: Title of report
+    value: Tidyverse dashboard
+    input: text
   start: 
     label: Start date of report
     value: !r lubridate::today() - lubridate::ddays(30)
     input: date
   orgs:
     label: GitHub organizations
-    value: tidyverse, r-lib, r-dbi
+    value: tidyverse, r-lib, r-dbi, tidymodels
     input: text
   privacy:
     label: Repository Privacy
@@ -47,11 +51,6 @@ privacy <- normalize_privacy(params$privacy)
 # plus1 emoji
 p1 <- "\U0001f44d"
 ```
-
----
-title: "`r paste0(tidyversedashboard::get_org_name(orgs[[1]]), " repository dashboard")`"
----
-
 
 ```{r pr_stats, include=FALSE, cache = on_macos}
 options(repos = c(CRAN='https://cloud.r-project.org'))
@@ -180,7 +179,7 @@ issue_progress_running <-
 library(nycflights13)
 library(dplyr)
 
-largest_groups <- function(x, n = 5) {
+largest_groups <- function(x, n = 5) {
   groups <- min_rank(desc(group_size(x))) <= n
   x[group_indices(x) %in% which(groups), ]
 }
