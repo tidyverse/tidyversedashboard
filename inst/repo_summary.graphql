@@ -26,7 +26,7 @@ query repoSummary($org:String!, $privacy: RepositoryPrivacy, $cursor:String) {
         prs : pullRequests(states:OPEN) {
           totalCount
         }
-        watchers : stargazers() {
+        watchers : stargazers {
           totalCount
         }
         DESCRIPTION : object(expression: "master:DESCRIPTION") {
