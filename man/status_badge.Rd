@@ -2,14 +2,11 @@
 % Please edit documentation in R/dashboard.R
 \name{status_badge}
 \alias{status_badge}
-\alias{travis_status_badge}
-\alias{appveyor_status_badge}
+\alias{github_status_badge}
 \alias{cran_status_badge}
 \title{Generate a status badge}
 \usage{
-travis_status_badge(owner, package)
-
-appveyor_status_badge(owner, package)
+github_status_badge(owner, package)
 
 cran_status_badge(package)
 }

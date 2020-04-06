@@ -77,14 +77,8 @@ desc_maintainer <- function(description) {
 #' @param package The package
 #' @name status_badge
 #' @export
-travis_status_badge <- function(owner, package) {
-  glue::glue('<a rel="noopener" target="_blank" href="https://travis-ci.org/{owner}/{package}"><img src="https://travis-ci.org/{owner}/{package}.svg?branch=master"></a>')
-}
-
-#' @rdname status_badge
-#' @export
-appveyor_status_badge <- function(owner, package) {
-  glue::glue('<a rel="noopener" target="_blank" href="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}"><img src="https://ci.appveyor.com/api/projects/status/github/{owner}/{package}?svg=true&branch=master"></a>')
+github_status_badge <- function(owner, package) {
+  glue::glue('<a rel="noopener" target="_blank" href="https://github.com/{owner}/{package}/actions?workflow=R-CMD-check"><img src="https://github.com/{owner}/{package}/workflows/R-CMD-check/badge.svg"></a>')
 }
 
 #' @rdname status_badge
