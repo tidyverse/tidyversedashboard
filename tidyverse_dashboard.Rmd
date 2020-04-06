@@ -29,6 +29,7 @@ library(flexdashboard)
 library(gh)
 library(jsonlite)
 library(lubridate)
+library(forcats)
 library(dplyr)
 library(purrr)
 library(tibble)
@@ -165,35 +166,35 @@ data_table(issue_progress_table)
 
 > Issues with status modified (`r start` - `r now()`).
 
-### Issue status
+### 30-day progress summary
 
 ```{r}
-issue_progress_running <-
-  issue_progress_table %>% group_by(type) %>% mutate(count = case_when(
-    type == "issue" & status == "closed" ~ -1,
-    type == "pull_request" &
-      (status == "merged" | status == "closed") ~ -1,
-    TRUE ~ 1
-  )) %>% mutate(running_total = cumsum(count))
+issue_data3 <- issue_data2 %>% 
+  filter(!is.na(event)) %>% 
+  select(event, owner, package, num = issue, type, status) %>% 
+  mutate(
+    date = as.Date(event),
+    event = NULL,
+    n = if_else(status %in% c("closed", "merged"), -1, 1)
+  )
 
-library(nycflights13)
-library(dplyr)
+daily <- issue_data3 %>% 
+  group_by(date, type, status, ) %>% 
+  summarise(n = sum(n))
 
-largest_groups <- function(x, n = 5) {
-  groups <- min_rank(desc(group_size(x))) <= n
-  x[group_indices(x) %in% which(groups), ]
-}
-
-issue_progress_running %>%
-  group_by(maintainer) %>%
-  largest_groups(9) %>%
-  ungroup() %>%
-  mutate(maintainer = sub("<.*", "", maintainer)) %>%
-  ggplot(aes(event, running_total, color = maintainer, group = type)) +
-    geom_step() +
-    labs(x = NULL, y = "Open Issues", color = "package maintaner") +
-    facet_wrap(~type) +
-    scale_color_brewer(type = "qual", palette = "Set1")
+daily %>% 
+  mutate(status = fct_relevel(status, "opened", "merged")) %>% 
+  ggplot(aes(date, n, fill = type)) + 
+  geom_col() +
+  facet_grid(status ~ ., scales = "free_y", space = "free") +
+  labs(
+    title = "Daily changes in issues and PRs",
+    x = NULL,
+    y = NULL
+  ) + 
+  scale_y_continuous(breaks = scales::breaks_width(20), expand = c(0, 5)) +
+  scale_fill_brewer(palette = "Set1", guide = NULL) + 
+  scale_x_date(date_breaks = "1 week", date_labels = "%b %d", date_minor_breaks = "1 day")
 ```
 
 > `r start` - `r now()`
