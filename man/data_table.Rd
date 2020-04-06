@@ -4,8 +4,16 @@
 \alias{data_table}
 \title{A wrapper around [DT::datatable] to change some defaults}
 \usage{
-data_table(data, options = list(), ..., filter = "top", style = "default",
-  autoHideNavigation = TRUE, rownames = FALSE, escape = FALSE)
+data_table(
+  data,
+  options = list(),
+  ...,
+  filter = "top",
+  style = "default",
+  autoHideNavigation = TRUE,
+  rownames = FALSE,
+  escape = FALSE
+)
 }
 \arguments{
 \item{data}{a data object (either a matrix or a data frame)}
@@ -28,7 +36,10 @@ in the input boxes, and \code{plain} means if you want to use Bootstrap
 form styles or plain text input styles for the text input boxes}
 
 \item{style}{the style name (\url{http://datatables.net/manual/styling/});
-currently only \code{'default'} and \code{'bootstrap'} are supported}
+currently only \code{'default'}, \code{'bootstrap'}, and
+\code{'bootstrap4'} are supported. Note that DT doesn't contain the theme
+files so in order to display the style correctly, you have to link
+the necessary files in the header.}
 
 \item{autoHideNavigation}{\code{TRUE} to automatically hide navigational UI
 when the number of total records is less than the page size.}
@@ -42,7 +53,9 @@ to escape the whole table, and \code{FALSE} means not to escape it;
 alternatively, you can specify numeric column indices or column names to
 indicate which columns to escape, e.g. \code{1:5} (the first 5 columns),
 \code{c(1, 3, 4)}, or \code{c(-1, -3)} (all columns except the first and
-third), or \code{c('Species', 'Sepal.Length')}}
+third), or \code{c('Species', 'Sepal.Length')}; since the row names take
+the first column to display, you should add the numeric column indices
+by one when using \code{rownames}}
 }
 \description{
 A wrapper around [DT::datatable] to change some defaults

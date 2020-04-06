@@ -9,8 +9,8 @@ num_downloads(package, when = "last-week")
 \arguments{
 \item{package}{One or more packages to search}
 
-\item{when}{\code{last_day}, \code{last_week} or \code{last_month}.
-If this is given, then \code{from} and \code{to} are ignored.}
+\item{when}{\code{last-day}, \code{last-week} or \code{last-month} (see 
+details). If this is given, then \code{from} and \code{to} are ignored.}
 }
 \description{
 Number of downloads from RStudio mirror
