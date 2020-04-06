@@ -9,7 +9,7 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jimhester/tidyversedashboard
 BugReports: https://github.com/jimhester/tidyversedashboard/issues
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 7.1.0
 Imports: 
     dplyr,
     desc,
