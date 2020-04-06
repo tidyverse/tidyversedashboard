@@ -22,6 +22,7 @@ params:
     label: Repository Privacy
     value: PUBLIC
     choices: [PUBLIC, PRIVATE, BOTH]
+title: "`r params$title`"	
 ---
 
 ```{r setup, include = FALSE}
