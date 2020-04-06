@@ -67,7 +67,7 @@ remove_aliases <- function(x, y) {
 #' @export
 desc_maintainer <- function(description) {
   res <- map_chr(description, 
-    possibly(function(.x) { .x$get_maintainer() %|||% NA_character_}, otherwise = NA_character_))
+    possibly(function(.x) { .x$get_maintainer()[[1]] %|||% NA_character_}, otherwise = NA_character_))
 
   remove_aliases(res, email_aliases)
 }
