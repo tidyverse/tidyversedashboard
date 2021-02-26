@@ -65,7 +65,7 @@ if (!is.null(pr_data)) {
   prs <- pr_data %>% filter(updated >= start) %>%
     mutate(reviewer = map2(reviews, comments, function(reviews, comments) unique(c(reviews$reviewer, comments$commenter)))) %>%
     select(owner, repo, issue, author, created, updated, reviewer) %>%
-    unnest() %>%
+    unnest(cols = c(reviewer)) %>%
     filter(reviewer != author, reviewer != "codecov.io") %>%
     mutate(
       reviewer = github_user_home(reviewer),

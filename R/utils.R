@@ -28,15 +28,19 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "def
       list(targets = "_all", orderSequence = c("desc", "asc"))))
 
   options <- modifyList(options, default_opts)
-  datatable(data,
+  out <- datatable(data,
     ...,
     options = options,
     filter = filter,
     style = style,
     autoHideNavigation = autoHideNavigation,
     rownames = rownames,
-    escape = escape) %>%
-  formatDate(which(map_lgl(data, inherits, "POSIXct")), "toLocaleString")
+    escape = escape)
+  date_cols <- which(map_lgl(data, inherits, "POSIXct"))
+  if (length(date_cols) > 0) {
+    out <- formatDate(out, date_cols, "toLocaleString")
+  }
+  out
 }
 
 #' Plot a sparkline table
