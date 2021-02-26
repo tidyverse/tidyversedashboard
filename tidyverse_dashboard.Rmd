@@ -40,7 +40,7 @@ library(tidyversedashboard)
 library(tidyr)
 library(sparkline)
 library(ggplot2)
-on_macos <- tolower(Sys.info()[["sysname"]]) == "darwin"
+on_macos <- function() tolower(Sys.info()[["sysname"]]) == "darwin"
 gh_colors <- list(
   green = "#2cbe4e",
   red = "#CB2434",
@@ -54,7 +54,7 @@ privacy <- normalize_privacy(params$privacy)
 p1 <- "\U0001f44d"
 ```
 
-```{r pr_stats, include=FALSE, cache = on_macos}
+```{r pr_stats, include=FALSE, cache = on_macos()}
 options(repos = c(CRAN='https://cloud.r-project.org'))
 
 pr_data <- tryCatch(
@@ -81,7 +81,7 @@ if (!is.null(pr_data)) {
 }
 ```
 
-```{r repo_stats, include = FALSE, cache = on_macos}
+```{r repo_stats, include = FALSE, cache = on_macos()}
 repo_data <- map(orgs, org_data, privacy)
 
 repo_summary <- map_dfr(repo_data, "summary")
@@ -91,7 +91,7 @@ issues <- map_dfr(repo_data, "issues")
 
 `r duration` issue progress
 =====================================
-```{r issue_progress, cache = on_macos, include = FALSE}
+```{r issue_progress, cache = on_macos(), include = FALSE}
 issue_data <- map_dfr(orgs, issue_progress, start, privacy)
 
 issue_data2 <- issue_data %>% 
@@ -203,7 +203,7 @@ daily %>%
 Repository summary
 =====================================
 
-```{r repo_summary, cache = on_macos}
+```{r repo_summary, cache = on_macos()}
 summary_table <- repo_summary %>%
   rename("package" = "repo") %>%
   mutate(
