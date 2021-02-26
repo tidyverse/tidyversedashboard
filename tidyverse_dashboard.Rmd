@@ -233,7 +233,7 @@ Open issues
 substitute_emoji <- function(x) {
   m <- gregexpr(":[^[:space:]]+:", x)
 
-  regmatches(x, m) <- lapply(regmatches(x, m), function(xx) map_chr(gsub(":", "", xx), emo::ji))
+  regmatches(x, m) <- lapply(regmatches(x, m), function(xx) map_chr(gsub(":", "", xx), purrr::possibly(emo::ji, "")))
   x
 }
 
