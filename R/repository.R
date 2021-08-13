@@ -18,7 +18,7 @@ parse_summary_repository <- function(x) {
 #' @param org A GitHub user, either a normal user or an organization
 #' @param privacy The repository privacy
 #' @export
-#' @importFrom dplyr group_by summarize left_join
+#' @importFrom dplyr group_by summarize left_join add_row
 #' @importFrom tidyr replace_na
 org_data <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
   privacy <- normalize_privacy(privacy)
@@ -27,6 +27,15 @@ org_data <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
   summary <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_summary_repository))
   issues <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_issues_repository))
 
+  if (nrow(issues) == 0) {
+    issues <- issues %>% 
+      add_row() %>% 
+      mutate(
+        owner = org,
+        repo = NA
+      )
+  }
+  
   summary <- left_join(
     summary,
     issues %>%
