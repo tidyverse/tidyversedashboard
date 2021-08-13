@@ -17,6 +17,7 @@ parse_pr_prs <- function(x) {
     author = x$author$login %||% NA_character_,
     created = parse_datetime_8601(x$createdAt %||% NA_character_),
     updated = parse_datetime_8601(x$updatedAt %||% NA_character_),
+    closed = parse_datetime_8601(x$closedAt %||% NA_character_),
     reviews = list(reviews),
     comments = list(comments))
 }
