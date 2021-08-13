@@ -213,6 +213,7 @@ summary_table <- repo_summary %>%
     dev_deps = desc_dev_deps(description),
     github_status = github_status_badge(owner, package),
     cran_status = cran_status_badge(package),
+    coverage_status = coverage_status_badge(owner, package, default = default_branch),
     activity = map2(owner, package, weekly_commits)) %>%
   select(owner, package, maintainer, watchers, reverse_deps, weekly_downloads, open_issues, prs, p1, everything(), -description) %>%
   rename(!!p1 := p1)

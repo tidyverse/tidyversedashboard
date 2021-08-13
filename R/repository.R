@@ -8,6 +8,7 @@ parse_summary_repository <- function(x) {
   tibble::tibble(
     owner = x$owner$login,
     repo = x$repo,
+    default_branch = ifelse(is.null(x$defaultBranchRef), "", x$defaultBranchRef$name),
     prs = x$prs$totalCount,
     watchers = x$watchers$totalCount,
     open_issues = x$open_issues$totalCount,

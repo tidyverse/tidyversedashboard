@@ -4,6 +4,7 @@ query repoSummary($org:String!, $privacy: RepositoryPrivacy, $cursor:String) {
       nodes {
         owner {login},
         repo:name,
+        defaultBranchRef { name },
         open_issues : issues(first:100, states:OPEN) {
           totalCount
           nodes {
