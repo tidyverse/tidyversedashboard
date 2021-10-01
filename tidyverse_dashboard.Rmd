@@ -54,6 +54,31 @@ privacy <- normalize_privacy(params$privacy)
 p1 <- "\U0001f44d"
 ```
 
+```{r remaining, results='hide'}
+# Rate limit ----
+ratelimit <- "query {
+  viewer {
+    login
+  }
+  rateLimit {
+    limit
+    cost
+    remaining
+    resetAt
+  }
+}"
+
+rate_value <- gh::gh_gql(ratelimit)
+if (rate_value[[1]]$rateLimit$remaining < 1250) {
+  # remaining seconds
+  remaining <- round(as.numeric(as.duration(as_datetime(rate_value[[1]]$rateLimit$resetAt) - now())))
+  
+  print(paste("Let's wait a little", remaining/60, "minutes"))
+  Sys.sleep(remaining)
+}
+
+```
+
 ```{r pr_stats, include=FALSE, cache = on_macos()}
 options(repos = c(CRAN='https://cloud.r-project.org'))
 
