@@ -8,6 +8,7 @@ query pullRequest($org:String!, $privacy: RepositoryPrivacy, $cursor:String) {
             number
             createdAt
             updatedAt
+            closedAt
             author {
               login
             }

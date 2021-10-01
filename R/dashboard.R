@@ -87,6 +87,12 @@ cran_status_badge <- function(package) {
   glue::glue('<a rel="noopener" target="_blank" href="https://cran.r-project.org/web/checks/check_results_{package}.html"><img src="https://cranchecks.info/badges/worst/{package}"></a>')
 }
 
+#' @rdname status_badge
+#' @export
+coverage_status_badge <- function(owner, package, default = "main") {
+  glue::glue('<a rel="noopener" target="_blank" href="https://codecov.io/gh/{owner}/{package}"><img src="https://codecov.io/gh/{owner}/{package}/branch/{default}/graph/badge.svg"></a>')
+}
+
 #' Return github user name homepage link
 #' @param username github username
 #' @export

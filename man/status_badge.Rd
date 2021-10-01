@@ -4,11 +4,14 @@
 \alias{status_badge}
 \alias{github_status_badge}
 \alias{cran_status_badge}
+\alias{coverage_status_badge}
 \title{Generate a status badge}
 \usage{
 github_status_badge(owner, package)
 
 cran_status_badge(package)
+
+coverage_status_badge(owner, package, default = "main")
 }
 \arguments{
 \item{owner}{The repository owner}
