@@ -88,6 +88,7 @@ cran_status_badge <- function(package) {
 }
 
 #' @rdname status_badge
+#' @param default Main branch of the git repository
 #' @export
 coverage_status_badge <- function(owner, package, default = "main") {
   glue::glue('<a rel="noopener" target="_blank" href="https://codecov.io/gh/{owner}/{package}"><img src="https://codecov.io/gh/{owner}/{package}/branch/{default}/graph/badge.svg"></a>')
@@ -101,7 +102,7 @@ github_user_home <- function(username) {
 }
 
 #' Normalize the repository privacy
-#' @param Github repository privacy
+#' @param privacy repository privacy
 #' @export
 normalize_privacy <- function(privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
   privacy <- match.arg(privacy)

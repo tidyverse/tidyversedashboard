@@ -25,6 +25,8 @@ JavaScript code instead of normal character strings; you can also set
 options globally via \code{\link{options}(DT.options = list(...))}, and
 global options will be merged into this \code{options} argument if set}
 
+\item{...}{Other parameters to add to DT::datatable}
+
 \item{filter}{whether/where to use column filters; \code{none}: no filters;
 \code{bottom/top}: put column filters at the bottom/top of the table; range
 sliders are used to filter numeric/date/time columns, select lists are used

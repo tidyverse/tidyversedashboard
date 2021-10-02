@@ -26,7 +26,8 @@ parse_summary_repository <- function(x) {
 org_data <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
   privacy <- normalize_privacy(privacy)
 
-  res <- paginate(function(cursor, ...) graphql_query("repo_summary.graphql", org = org, cursor = cursor, privacy = privacy))
+  res <- paginate(function(cursor, ...) graphql_query("repo_summary.graphql",
+      org = org, cursor = cursor, privacy = privacy))
   summary <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_summary_repository))
   issues <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_issues_repository))
 

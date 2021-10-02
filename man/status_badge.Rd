@@ -17,6 +17,8 @@ coverage_status_badge(owner, package, default = "main")
 \item{owner}{The repository owner}
 
 \item{package}{The package}
+
+\item{default}{Main branch of the git repository}
 }
 \description{
 Generate a status badge

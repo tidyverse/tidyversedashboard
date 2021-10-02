@@ -1,5 +1,6 @@
 res <- paginate(function(cursor, ...) 
-  graphql_query("repo_summary.graphql", org = "ThinkR-open", cursor = cursor, privacy = "PUBLIC")
+  graphql_query("repo_summary.graphql", org = "ThinkR-open", cursor = cursor,
+   privacy = "PUBLIC")
 )
 
 
