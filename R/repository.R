@@ -12,7 +12,9 @@ parse_summary_repository <- function(x) {
     prs = x$prs$totalCount,
     watchers = x$watchers$totalCount,
     open_issues = x$open_issues$totalCount,
-    description = list(desc::desc(text = x$DESCRIPTION$text %||% character())))
+    description = list(desc::desc(text = x$DESCRIPTION$text %||% character())),
+    topics = list(purrr::map_chr(purrr::map(x$repositoryTopics$nodes, "topic"), "name"))
+  )
 }
 
 #' Compute an organization summary

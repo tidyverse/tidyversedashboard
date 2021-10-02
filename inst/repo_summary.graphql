@@ -5,6 +5,12 @@ query repoSummary($org:String!, $privacy: RepositoryPrivacy, $cursor:String) {
         owner {login},
         repo:name,
         defaultBranchRef { name },
+        repositoryTopics(first:10) {
+          totalCount
+          nodes {
+            topic {name}
+          }
+        }
         open_issues : issues(first:100, states:OPEN) {
           totalCount
           nodes {
