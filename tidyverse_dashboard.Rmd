@@ -55,6 +55,12 @@ p1 <- "\U0001f44d"
 ```
 
 ```{r remaining, results='hide'}
+#' Wait if required rate is above remaining one
+#'
+#' @param required Required amount of points you need for the next step
+#' When using the built-in GITHUB_TOKEN in GitHub Actions, the rate limit is 1,000 requests per hour per repository
+wait_for_rate <- function(required = 100) {
+  
 # Rate limit ----
 ratelimit <- "query {
   viewer {
@@ -69,17 +75,26 @@ ratelimit <- "query {
 }"
 
 rate_value <- gh::gh_gql(ratelimit)
-if (rate_value[[1]]$rateLimit$remaining < 1250) {
-  # remaining seconds
-  remaining <- round(as.numeric(as.duration(as_datetime(rate_value[[1]]$rateLimit$resetAt) - now())))
-  
-  print(paste("Let's wait a little", remaining/60, "minutes"))
-  Sys.sleep(remaining)
+
+message("Rate value:", rate_value)
+
+  if (rate_value[[1]]$rateLimit$remaining < required) {
+    # remaining seconds
+    remaining <- round(as.numeric(as.duration(as_datetime(rate_value[[1]]$rateLimit$resetAt) - now())))
+    
+    message(paste("Let's wait a little", round(remaining/60), "minutes"))
+    Sys.sleep(remaining)
+  } else {
+    message("Rate's good")
+  }
 }
 
 ```
 
-```{r pr_stats, include=FALSE, cache = on_macos()}
+```{r pr_stats, include=FALSE, cache = on_macos(), message=FALSE}
+# Requires ~280 point for query
+wait_for_rate(280)
+
 options(repos = c(CRAN='https://cloud.r-project.org'))
 
 pr_data <- tryCatch(
@@ -104,19 +119,31 @@ if (!is.null(pr_data)) {
   pr_reviewers <- NULL
   pr_pairs <- NULL
 }
+
+# Get remaining rate
+wait_for_rate(1)
 ```
 
-```{r repo_stats, include = FALSE, cache = on_macos()}
+```{r repo_stats, include = FALSE, cache = on_macos(), message=FALSE}
+# Requires ~650 points for rate limitation
+wait_for_rate(650)
+
 repo_data <- map(orgs, org_data, privacy)
 
 repo_summary <- map_dfr(repo_data, "summary")
 issues <- map_dfr(repo_data, "issues")
+
+# Get remaining rate
+wait_for_rate(1)
 ```
 
 
 `r duration` issue progress
 =====================================
-```{r issue_progress, cache = on_macos(), include = FALSE}
+```{r issue_progress, cache = on_macos(), include = FALSE, message=FALSE}
+# Requires ~15 points for rate limitation
+wait_for_rate(15)
+
 issue_data <- map_dfr(orgs, issue_progress, start, privacy)
 
 issue_data2 <- issue_data %>% 
@@ -137,6 +164,9 @@ issue_data2 <- issue_data %>%
       status == "closed" ~ closed,
       status == "opened" ~ opened)
   )
+  
+# Get remaining rate
+wait_for_rate(1)
 ```
 
 ````{r}
