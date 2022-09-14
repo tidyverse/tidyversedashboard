@@ -150,7 +150,7 @@ valueBox(nrow(issues), icon = "fa-exclamation-circle")
 Row
 -------------------------------------
 
-### `r duration` progess
+### `r duration` progress
 
 ```{r}
 issue_progress_table <- issue_data2 %>%
