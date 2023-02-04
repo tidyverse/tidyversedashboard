@@ -7,7 +7,7 @@
 get_org_logo(org)
 }
 \arguments{
-\item{org}{}
+\item{org}{Github org name}
 }
 \value{
 writes the avatar as a local file logo.png
@@ -17,4 +17,5 @@ Get org logo
 }
 \examples{
 get_org_logo("r-lib")
+unlink("logo.png")
 }

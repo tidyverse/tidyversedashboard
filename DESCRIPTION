@@ -1,29 +1,28 @@
 Package: tidyversedashboard
 Title: Tidyverse activity dashboard
 Version: 0.0.0.9000
-Authors@R: person("Jim", "Hester", email = "james.f.hester@gmail.com", role = c("aut", "cre"))
-Description: A dashboard to show repository activity in tidyverse organisations.
-Depends: R (>= 3.4)
-License: GPL-3
-Encoding: UTF-8
-LazyData: true
+Authors@R: 
+    person("Jim", "Hester", , "james.f.hester@gmail.com", role = c("aut", "cre"))
+Description: A dashboard to show repository activity in tidyverse
+    organisations.
+License: MIT + file LICENSE
 URL: https://github.com/jimhester/tidyversedashboard
 BugReports: https://github.com/jimhester/tidyversedashboard/issues
-RoxygenNote: 7.1.0
+Depends: 
+    R (>= 3.4)
 Imports: 
-    dplyr,
+    cranlogs,
     desc,
+    dplyr,
     DT,
+    gh,
     glue,
     htmlwidgets,
     lubridate,
+    magick,
     purrr,
     sparkline,
     tibble,
-    tidyr,
-    gh,
-    cranlogs,
-    magick
-Remotes:
-  jeroen/curl,
-  rstudio/rmarkdown
+    tidyr
+Encoding: UTF-8
+RoxygenNote: 7.2.3

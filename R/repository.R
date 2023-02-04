@@ -31,7 +31,7 @@ org_data <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
     summary,
     issues %>%
       group_by(owner, repo) %>%
-      summarize(p1 = sum(p1),
+      summarize(p1 = sum(.data$p1),
                 bugs = num_label(labels, "bug"),
                 features = num_label(labels, "feature"),
                 unlabeled = sum(lengths(labels) == 0))) %>%
