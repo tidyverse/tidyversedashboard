@@ -19,7 +19,7 @@ data_table(
 \item{data}{a data object (either a matrix or a data frame)}
 
 \item{options}{a list of initialization options (see
-\url{http://datatables.net/reference/option/}); the character options
+\url{https://datatables.net/reference/option/}); the character options
 wrapped in \code{\link[htmlwidgets]{JS}()} will be treated as literal
 JavaScript code instead of normal character strings; you can also set
 options globally via \code{\link{options}(DT.options = list(...))}, and
@@ -35,14 +35,22 @@ this argument of the form \code{list(position = 'top', clear = TRUE, plain
 in the input boxes, and \code{plain} means if you want to use Bootstrap
 form styles or plain text input styles for the text input boxes}
 
-\item{style}{the style name (\url{http://datatables.net/manual/styling/});
-currently only \code{'default'}, \code{'bootstrap'}, and
-\code{'bootstrap4'} are supported. Note that DT doesn't contain the theme
-files so in order to display the style correctly, you have to link
-the necessary files in the header.}
+\item{style}{either \code{'auto'}, \code{'default'}, \code{'bootstrap'}, or
+\code{'bootstrap4'}. If \code{'auto'}, and a **bslib** theme is
+currently active, then bootstrap styling is used in a way that "just works"
+for the active theme. Otherwise,
+\href{https://datatables.net/manual/styling/classes}{DataTables
+\code{'default'} styling} is used. If set explicitly to \code{'bootstrap'}
+or \code{'bootstrap4'}, one must take care to ensure Bootstrap's HTML
+dependencies (as well as Bootswatch themes, if desired) are included on the
+page. Note, when set explicitly, it's the user's responsibility to ensure
+that only one unique `style` value is used on the same page, if multiple
+DT tables exist, as different styling resources may conflict with each other.}
 
 \item{autoHideNavigation}{\code{TRUE} to automatically hide navigational UI
-when the number of total records is less than the page size.}
+(only display the table body) when the number of total records is less
+than the page size. Note, it only works on the client-side processing mode
+and the `pageLength` option should be provided explicitly.}
 
 \item{rownames}{\code{TRUE} (show row names) or \code{FALSE} (hide row names)
 or a character vector of row names; by default, the row names are displayed
@@ -54,8 +62,8 @@ alternatively, you can specify numeric column indices or column names to
 indicate which columns to escape, e.g. \code{1:5} (the first 5 columns),
 \code{c(1, 3, 4)}, or \code{c(-1, -3)} (all columns except the first and
 third), or \code{c('Species', 'Sepal.Length')}; since the row names take
-the first column to display, you should add the numeric column indices
-by one when using \code{rownames}}
+the first column to display, you should add the numeric column indices by
+one when using \code{rownames}}
 }
 \description{
 A wrapper around [DT::datatable] to change some defaults
