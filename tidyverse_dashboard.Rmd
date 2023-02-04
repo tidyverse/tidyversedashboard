@@ -150,7 +150,7 @@ valueBox(nrow(issues), icon = "fa-exclamation-circle")
 Row
 -------------------------------------
 
-### `r duration` progess
+### `r duration` progress
 
 ```{r}
 issue_progress_table <- issue_data2 %>%
@@ -223,7 +223,7 @@ summary_table <- repo_summary %>%
 dt <- sparkline_table(
   summary_table,
   sparkline_column = which(colnames(summary_table) == "activity"),
-  colnames = c("52 week conmmit activity" = "activity"))
+  colnames = c("52 week commit activity" = "activity"))
 dt
 ```
 
