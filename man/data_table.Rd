@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{data_table}
 \alias{data_table}
-\title{A wrapper around [DT::datatable] to change some defaults}
+\title{A wrapper around `datatable()` to change some defaults}
 \usage{
 data_table(
   data,
@@ -24,6 +24,8 @@ wrapped in \code{\link[htmlwidgets]{JS}()} will be treated as literal
 JavaScript code instead of normal character strings; you can also set
 options globally via \code{\link{options}(DT.options = list(...))}, and
 global options will be merged into this \code{options} argument if set}
+
+\item{...}{Other args passed to [DT::datatable]}
 
 \item{filter}{whether/where to use column filters; \code{none}: no filters;
 \code{bottom/top}: put column filters at the bottom/top of the table; range
@@ -66,5 +68,5 @@ the first column to display, you should add the numeric column indices by
 one when using \code{rownames}}
 }
 \description{
-A wrapper around [DT::datatable] to change some defaults
+A wrapper around `datatable()` to change some defaults
 }

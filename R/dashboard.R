@@ -95,7 +95,7 @@ github_user_home <- function(username) {
 }
 
 #' Normalize the repository privacy
-#' @param Github repository privacy
+#' @param privacy Github repository privacy
 #' @export
 normalize_privacy <- function(privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
   privacy <- match.arg(privacy)

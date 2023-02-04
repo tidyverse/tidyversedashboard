@@ -5,7 +5,9 @@ graphql_query <- function(json, ...) {
   gh::gh("POST /graphql", query = query, variables = compact(list(...)))
 }
 
-#' A wrapper around [DT::datatable] to change some defaults
+#' A wrapper around `datatable()` to change some defaults
+#' 
+#' @param ... Other args passed to [DT::datatable]
 #' @importFrom DT datatable formatDate
 #' @importFrom utils modifyList
 #' @importFrom purrr map_lgl possibly
@@ -44,8 +46,11 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "def
 }
 
 #' Plot a sparkline table
+#' 
+#' @param ... Other args passed on to [data_table()].
 #' @inheritParams DT::datatable
 #' @importFrom DT JS
+#' 
 #' @param sparkline_column The column to convert to a sparkline
 #' @export
 sparkline_table <- function(data, sparkline_column, ...) {
@@ -80,13 +85,14 @@ parse_datetime_8601 <- function(x) {
 
 #' Get org logo
 #'
-#' @param org 
+#' @param org Github org name
 #'
 #' @return writes the avatar as a local file logo.png
 #' @export
 #'
 #' @examples
 #' get_org_logo("r-lib")
+#' unlink("logo.png")
 get_org_logo <- function(org){
   glue::glue("https://github.com/{org}.png") %>%
     magick::image_read() %>%

@@ -6,5 +6,6 @@ silence_check_note <- function() {
 }
 
 ## usethis namespace: start
+#' @importFrom dplyr .data
 ## usethis namespace: end
 NULL
