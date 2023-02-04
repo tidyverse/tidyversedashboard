@@ -24,6 +24,3 @@ Imports:
     gh,
     cranlogs,
     magick
-Remotes:
-  jeroen/curl,
-  rstudio/rmarkdown
