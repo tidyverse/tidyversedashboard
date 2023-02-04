@@ -114,7 +114,7 @@ issue_data2 <- issue_data %>%
   )
 ```
 
-````{r}
+```{r}
 totals <- issue_data2 %>% group_by(type, status) %>% tally() %>% mutate(n = if_else(status == "closed" | status == "merged", n * -1L, n)) %>% na.omit()
 ```
 
