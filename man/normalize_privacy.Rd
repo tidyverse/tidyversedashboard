@@ -7,7 +7,7 @@
 normalize_privacy(privacy = c("PUBLIC", "PRIVATE", "BOTH"))
 }
 \arguments{
-\item{Github}{repository privacy}
+\item{privacy}{repository privacy}
 }
 \description{
 Normalize the repository privacy

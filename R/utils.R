@@ -6,6 +6,7 @@ graphql_query <- function(json, ...) {
 }
 
 #' A wrapper around [DT::datatable] to change some defaults
+#' @param ... Other parameters to add to DT::datatable
 #' @importFrom DT datatable formatDate
 #' @importFrom utils modifyList
 #' @importFrom purrr map_lgl possibly
@@ -47,6 +48,7 @@ data_table <- function(data, options = list(), ..., filter = "top", style = "def
 #' @inheritParams DT::datatable
 #' @importFrom DT JS
 #' @param sparkline_column The column to convert to a sparkline
+#' @param ... Other parameter to add to DT::datatable
 #' @export
 sparkline_table <- function(data, sparkline_column, ...) {
   table <- data_table(data, ...)
@@ -80,13 +82,15 @@ parse_datetime_8601 <- function(x) {
 
 #' Get org logo
 #'
-#' @param org 
+#' @param org Name of the GiHub organisation / user to get logo from
 #'
 #' @return writes the avatar as a local file logo.png
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' get_org_logo("r-lib")
+#' }
 get_org_logo <- function(org){
   glue::glue("https://github.com/{org}.png") %>%
     magick::image_read() %>%

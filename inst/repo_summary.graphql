@@ -4,6 +4,13 @@ query repoSummary($org:String!, $privacy: RepositoryPrivacy, $cursor:String) {
       nodes {
         owner {login},
         repo:name,
+        defaultBranchRef { name },
+        repositoryTopics(first:10) {
+          totalCount
+          nodes {
+            topic {name}
+          }
+        }
         open_issues : issues(first:100, states:OPEN) {
           totalCount
           nodes {
@@ -29,7 +36,7 @@ query repoSummary($org:String!, $privacy: RepositoryPrivacy, $cursor:String) {
         watchers : stargazers {
           totalCount
         }
-        DESCRIPTION : object(expression: "master:DESCRIPTION") {
+        DESCRIPTION : object(expression: "HEAD:DESCRIPTION") {
           ... on Blob {
             text
           }

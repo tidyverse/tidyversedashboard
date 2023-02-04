@@ -55,7 +55,8 @@ parse_weekly_issues <- function(x) {
 #' @inheritParams org_data
 #' @importFrom lubridate today dweeks
 #' @export
-issue_progress <- function(org, start = today() - dweeks(1), privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
+issue_progress <- function(org, start = today() - dweeks(1),
+  privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
   privacy <- normalize_privacy(privacy)
   query <- glue::glue("user:{org} updated:>={start} sort:updated-dsc")
 

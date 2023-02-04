@@ -10,6 +10,8 @@ sparkline_table(data, sparkline_column, ...)
 \item{data}{a data object (either a matrix or a data frame)}
 
 \item{sparkline_column}{The column to convert to a sparkline}
+
+\item{...}{Other parameter to add to DT::datatable}
 }
 \description{
 Plot a sparkline table
