@@ -5,7 +5,7 @@ Authors@R:
     person("Jim", "Hester", , "james.f.hester@gmail.com", role = c("aut", "cre"))
 Description: A dashboard to show repository activity in tidyverse
     organisations.
-License: GPL-3
+License: MIT + file LICENSE
 URL: https://github.com/jimhester/tidyversedashboard
 BugReports: https://github.com/jimhester/tidyversedashboard/issues
 Depends: 
