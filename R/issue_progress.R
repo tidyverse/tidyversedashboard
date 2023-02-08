@@ -29,13 +29,17 @@ dfs_idx <- function(x, f) {
 end_cursor <- function(x) is.list(x) && !is.null(x$endCursor)
 
 paginate <- function(f, ...) {
+  cli::cli_progress_bar("Paginating GraphQL query")
+  
   out <- append(list(), f(NULL, ...))
   cursor <- dfs_val(out, end_cursor)[[1]]
   while (!is.null(cursor)) {
     res <- f(cursor, ...)
     out <- append(out, res)
     cursor <- dfs_val(res, end_cursor)[[1]]
+    cli::cli_progress_update()
   }
+  cli::cli_progress_update(force = TRUE)
   out
 }
 
