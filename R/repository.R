@@ -27,15 +27,17 @@ org_data <- function(org, privacy = c("PUBLIC", "PRIVATE", "BOTH")) {
   summary <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_summary_repository))
   issues <- map_dfr(res, function(x) map_dfr(x$repositoryOwner$repositories$nodes, parse_issues_repository))
 
-  summary <- left_join(
-    summary,
-    issues %>%
-      group_by(owner, repo) %>%
-      summarize(p1 = sum(.data$p1),
-                bugs = num_label(labels, "bug"),
-                features = num_label(labels, "feature"),
-                unlabeled = sum(lengths(labels) == 0))) %>%
-    replace_na(list(p1 = 0, bugs = 0, features = 0, unlabeled = 0))
+  issue_summary <- issues %>%
+    group_by(owner, repo) %>%
+    summarize(
+      p1 = sum(.data$p1),
+      bugs = num_label(labels, "bug"),
+      features = num_label(labels, "feature"),
+      unlabeled = sum(lengths(labels) == 0)
+    )
+  
+  summary <- left_join(summary, issue_summary, by = join_by(owner, repo)) 
+  summary <- replace_na(summary, list(p1 = 0, bugs = 0, features = 0, unlabeled = 0))
 
   list(summary = summary, issues = issues)
 }
